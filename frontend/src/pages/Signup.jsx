@@ -36,17 +36,36 @@ export default function SignupPage() {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
 
-    await fetch("http://localhost:3000/signup", {
-      method: "POST",
+    try {
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+      const response = await fetch("http://localhost:3000/signup", {
+        method: "POST",
 
-      body: JSON.stringify(data),
-    });
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify(data),
+      });
+
+      const text = await response.text();
+
+      if (!response.ok) {
+        alert(text);
+        return;
+      }
+
+      alert("Account created successfully");
+
+      navigate("/login");
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Something went wrong");
+    }
   };
 
   return (
@@ -148,8 +167,8 @@ export default function SignupPage() {
                   placeholder="John Doe"
                   {...register("fname")}
                   className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.fname
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-white/10 focus:border-cyan-400"
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
                     }`}
                 />
 
@@ -171,8 +190,8 @@ export default function SignupPage() {
                   placeholder="you@example.com"
                   {...register("email")}
                   className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.email
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-white/10 focus:border-cyan-400"
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
                     }`}
                 />
 
@@ -194,8 +213,8 @@ export default function SignupPage() {
                   placeholder="Create strong password"
                   {...register("psswd")}
                   className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.psswd
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-white/10 focus:border-cyan-400"
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
                     }`}
                 />
 
@@ -217,8 +236,8 @@ export default function SignupPage() {
                   placeholder="Confirm password"
                   {...register("confirmPassword")}
                   className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.confirmPassword
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-white/10 focus:border-cyan-400"
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
                     }`}
                 />
 

@@ -20,7 +20,7 @@ db.run(`
       uid INTEGER PRIMARY KEY AUTOINCREMENT,
       fname VARCAHR(20),
       mpassword VARCHAR(50),
-      email VARCHAR(30)
+      email VARCHAR(30) UNIQUE
 );
 `)
 app.get("/", (req, res) => {
@@ -37,18 +37,35 @@ app.post("/signup", async (req, res) => {
 
   try {
 
-    const hashedPassword = await bcrypt.hash(info.password, 10);
+    db.get(
+      `SELECT * FROM users WHERE email=?`,
+      [info.email],
 
-    db.run(
-      `INSERT INTO users (fname, mpassword, email) VALUES (?, ?, ?)`,
-      [info.fname, hashedPassword, info.email],
-      (err) => {
+      async (err, row) => {
 
         if (err) {
           return res.status(500).send(err.message);
         }
 
-        res.send("OK");
+        if (row) {
+          return res.status(409).send("Email already exists");
+        }
+
+        const hashedPassword = await bcrypt.hash(info.password, 10);
+
+        db.run(
+          `INSERT INTO users (fname, mpassword, email) VALUES (?, ?, ?)`,
+          [info.fname, hashedPassword, info.email],
+
+          (err) => {
+
+            if (err) {
+              return res.status(500).send(err.message);
+            }
+
+            res.send("Account created");
+          }
+        );
       }
     );
 
