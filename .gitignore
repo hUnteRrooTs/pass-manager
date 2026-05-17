@@ -1,43 +1,29 @@
-# Dependencies
+# Node modules
 frontend/node_modules/
 backend/node_modules/
 
-# Logs
-frontend/npm-debug.log*
-backend/npm-debug.log*
+# Build files
+frontend/dist/
+frontend/build/
+backend/dist/
+backend/build/
 
-# Environment variables
+# Environment files
 frontend/.env
 backend/.env
 
-# Build folders
-frontend/dist
-frontend/build
+# Database
+backend/database/*.db
+backend/database/*.sqlite
+backend/database/*.sqlite3
 
-backend/dist
-backend/build
-
-# SQLite database
-backend/*.db
-backend/*.sqlite
-backend/*.sqlite3
+# Logs
+*.log
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Vscode
-.vscode
-
-# Jetbrains
-.idea
-
-# Temporary files
-*.tmp
-*.temp
-
-# Linux
-*~
-
-# Coverage
-coverage
+# Editors
+.vscode/
+.idea/
