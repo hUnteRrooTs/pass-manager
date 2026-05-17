@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = z.object({
   email: z
@@ -13,6 +14,7 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -23,9 +25,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-
-    await fetch("http://localhost:3000/login", {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
 
       headers: {
@@ -34,6 +34,14 @@ export default function LoginPage() {
 
       body: JSON.stringify(data),
     });
+
+    if (response.ok) {
+      const user = await response.json();
+      localStorage.setItem("user", JSON.stringify(user));
+      navigate("/vault");
+    } else {
+      alert("Invalid credentials");
+    }
   };
 
   return (
@@ -135,8 +143,8 @@ export default function LoginPage() {
                   placeholder="you@example.com"
                   {...register("email")}
                   className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.email
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-white/10 focus:border-cyan-400"
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
                     }`}
                 />
 
@@ -167,8 +175,8 @@ export default function LoginPage() {
                   placeholder="Enter your password"
                   {...register("password")}
                   className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.password
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-white/10 focus:border-cyan-400"
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
                     }`}
                 />
 
