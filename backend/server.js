@@ -5,7 +5,10 @@ const app = express()
 const bcrypt = require("bcrypt");
 
 app.use(express.json());
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}))
 
 const db = new sqlite3.Database("./database/passwords.db", (err) => {
   if (err) {
@@ -23,6 +26,18 @@ db.run(`
       email VARCHAR(30) UNIQUE
 );
 `)
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS passwords (
+  pid INTEGER PRIMARY KEY AUTOINCREMENT,
+  uid INTEGER,
+  website TEXT,
+  username TEXT,
+  password TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+`)
+
 app.get("/", (req, res) => {
   res.send("Where are are")
 })
@@ -95,6 +110,7 @@ app.post("/login", (req, res) => {
         return res.status(401).send("Invalid credentials");
       }
 
+
       const match = await bcrypt.compare(
         info.password,
         row.mpassword
@@ -108,6 +124,56 @@ app.post("/login", (req, res) => {
     }
   );
 })
+
+app.post("/vault", async (req, res) => {
+
+  const info = {
+    uid: req.body.uid,
+    website: req.body.website,
+    username: req.body.username,
+    password: req.body.password,
+  };
+
+  db.run(
+    `INSERT INTO passwords (uid, website, username, password)
+     VALUES (?, ?, ?, ?)`,
+
+    [
+      info.uid,
+      info.website,
+      info.username,
+      info.password,
+    ],
+
+    (err) => {
+
+      if (err) {
+        return res.status(500).send(err.message);
+      }
+
+      res.send("Saved");
+    }
+  );
+});
+
+app.get("/vault/:uid", (req, res) => {
+
+  const uid = req.params.uid;
+
+  db.all(
+    `SELECT * FROM passwords WHERE uid=? ORDER BY created_at DESC`,
+    [uid],
+
+    (err, rows) => {
+
+      if (err) {
+        return res.status(500).send(err.message);
+      }
+
+      res.send(rows);
+    }
+  );
+});
 
 app.listen(3000, () => {
   console.log("Server is running")

@@ -1,14 +1,109 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 export default function VaultPage() {
-  const user = JSON.parse(localStorage.getItem("user"));
+
   const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [showModal, setShowModal] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  const [passwordLength, setPasswordLength] = useState(12);
+
+  const [includeUppercase, setIncludeUppercase] = useState(true);
+
+  const [includeLowercase, setIncludeLowercase] = useState(true);
+
+  const [includeNumbers, setIncludeNumbers] = useState(true);
+
+  const [includeSpecial, setIncludeSpecial] = useState(true);
+
+  const [passwords, setPasswords] = useState([]);
+
+  const [visiblePasswordId, setVisiblePasswordId] = useState(null);
   const logout = () => {
     localStorage.removeItem("user");
 
     navigate("/login");
   };
+
+  const onSubmit = async (data) => {
+
+    try {
+
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      const response = await fetch("http://localhost:3000/vault", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          uid: user.uid,
+          website: data.website,
+          username: data.username,
+          password: data.password,
+        }),
+      });
+
+      const text = await response.text();
+
+      if (!response.ok) {
+        alert(text);
+        return;
+      }
+
+      alert("Password saved");
+
+      reset();
+
+      setShowModal(false);
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Something went wrong");
+    }
+  };
+
+  useEffect(() => {
+
+    const fetchPasswords = async () => {
+
+      try {
+
+        const response = await fetch(
+          `http://localhost:3000/vault/${user.uid}`
+        );
+
+        const data = await response.json();
+
+        setPasswords(data);
+
+      } catch (err) {
+
+        console.log(err);
+      }
+    };
+
+    fetchPasswords();
+
+  }, []);
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
+
       {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-120px] left-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
@@ -19,6 +114,7 @@ export default function VaultPage() {
       {/* Navbar */}
       <header className="relative z-10 border-b border-white/10 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
+
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold text-lg">
               🔒
@@ -29,16 +125,21 @@ export default function VaultPage() {
             </h1>
           </div>
 
-          <button onClick={logout} className="px-5 py-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+          <button
+            onClick={logout}
+            className="px-5 py-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+          >
             Logout
           </button>
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
+
         {/* Welcome */}
         <div className="mb-10">
+
           <p className="inline-flex px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-300 text-sm">
             Your Secure Password Vault
           </p>
@@ -58,6 +159,7 @@ export default function VaultPage() {
 
         {/* Stats */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+
           <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
             <p className="text-slate-400 text-sm">
               Total Passwords
@@ -101,7 +203,9 @@ export default function VaultPage() {
 
         {/* Password Vault */}
         <div className="rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-2xl overflow-hidden">
+
           <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
             <div>
               <h3 className="text-2xl font-bold">
                 Saved Passwords
@@ -112,96 +216,297 @@ export default function VaultPage() {
               </p>
             </div>
 
-            <button className="px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold hover:scale-[1.02] transition-transform">
+            <button
+              onClick={() => setShowModal(true)}
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold hover:scale-[1.02] transition-transform"
+            >
               + Add Password
             </button>
           </div>
 
           {/* Password List */}
           <div className="divide-y divide-white/10">
-            {/* Item */}
-            <div className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-white/[0.03] transition-all">
-              <div>
-                <h4 className="text-xl font-semibold">
-                  Gmail
-                </h4>
 
-                <p className="text-slate-400">
-                  manoj@gmail.com
-                </p>
+            {passwords.length === 0 ? (
+
+              <div className="p-10 text-center text-slate-400">
+                No passwords saved yet
               </div>
 
-              <div className="flex items-center gap-3">
-                <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                  View
-                </button>
+            ) : (
 
-                <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                  Edit
-                </button>
+              passwords.map((item) => (
 
-                <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all">
-                  Delete
-                </button>
-              </div>
-            </div>
+                <div
+                  key={item.pid}
+                  className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-white/[0.03] transition-all"
+                >
 
-            {/* Item */}
-            <div className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-white/[0.03] transition-all">
-              <div>
-                <h4 className="text-xl font-semibold">
-                  GitHub
-                </h4>
+                  <div>
+                    <h4 className="text-xl font-semibold">
+                      {item.website}
+                    </h4>
 
-                <p className="text-slate-400">
-                  developer@github.com
-                </p>
-              </div>
+                    <p className="text-slate-400">
+                      {item.username}
+                    </p>
 
-              <div className="flex items-center gap-3">
-                <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                  View
-                </button>
 
-                <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                  Edit
-                </button>
+                    <p className="mt-2 text-cyan-400 font-mono">
+                      {visiblePasswordId === item.pid
+                        ? item.password
+                        : "••••••••••"}
+                    </p>
+                  </div>
 
-                <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all">
-                  Delete
-                </button>
-              </div>
-            </div>
+                  <div className="flex items-center gap-3">
 
-            {/* Item */}
-            <div className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-white/[0.03] transition-all">
-              <div>
-                <h4 className="text-xl font-semibold">
-                  Netflix
-                </h4>
+                    <button
+                      onClick={() => {
 
-                <p className="text-slate-400">
-                  movies@netflix.com
-                </p>
-              </div>
+                        if (visiblePasswordId === item.pid) {
+                          setVisiblePasswordId(null);
+                        } else {
+                          setVisiblePasswordId(item.pid);
+                        }
+                      }}
+                      className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                    >
+                      {visiblePasswordId === item.pid ? "Hide" : "View"}
+                    </button>
+                    <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                      Edit
+                    </button>
 
-              <div className="flex items-center gap-3">
-                <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                  View
-                </button>
+                    <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all">
+                      Delete
+                    </button>
 
-                <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                  Edit
-                </button>
-
-                <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all">
-                  Delete
-                </button>
-              </div>
-            </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </main>
+
+      {/* Add Password Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center px-4">
+
+          <div className="w-full max-w-lg rounded-[32px] bg-[#0b1120] border border-white/10 p-8 shadow-2xl shadow-cyan-500/10 relative">
+
+            {/* Close */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-5 right-5 w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-3xl font-bold">
+              Add Password
+            </h2>
+
+            <p className="text-slate-400 mt-2">
+              Securely save a new credential.
+            </p>
+            <form
+              className="mt-8 space-y-5"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+
+              {/* Website */}
+              <div>
+                <label className="text-sm text-slate-300 mb-2 block">
+                  Website
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="Github"
+                  {...register("website", {
+                    required: "Website is required",
+                  })}
+                  className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.website
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
+                    }`}
+                />
+
+                {errors.website && (
+                  <p className="text-red-400 text-sm mt-2">
+                    {errors.website.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Username */}
+              <div>
+                <label className="text-sm text-slate-300 mb-2 block">
+                  Username / Email
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="you@example.com"
+                  {...register("username", {
+                    required: "Username is required",
+                  })}
+                  className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.username
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
+                    }`}
+                />
+
+                {errors.username && (
+                  <p className="text-red-400 text-sm mt-2">
+                    {errors.username.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm text-slate-300">
+                    Password
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+
+                      const chars = {
+                        uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                        lowercase: "abcdefghijklmnopqrstuvwxyz",
+                        numbers: "0123456789",
+                        special: "!@#$%^&*()_+",
+                      };
+
+                      let available = "";
+
+                      if (includeUppercase) available += chars.uppercase;
+                      if (includeLowercase) available += chars.lowercase;
+                      if (includeNumbers) available += chars.numbers;
+                      if (includeSpecial) available += chars.special;
+
+                      if (!available) {
+                        return alert("Select atleast one option");
+                      }
+
+                      let generated = "";
+
+                      for (let i = 0; i < passwordLength; i++) {
+                        generated += available.charAt(
+                          Math.floor(Math.random() * available.length)
+                        );
+                      }
+
+                      setValue("password", generated);
+                    }}
+                    className="text-cyan-400 text-sm hover:text-cyan-300 transition-colors"
+                  >
+                    Generate
+                  </button>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Enter password"
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                  className={`w-full px-5 py-4 rounded-2xl bg-black/30 border outline-none transition-all placeholder:text-slate-500 ${errors.password
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-400"
+                    }`}
+                />
+
+                {errors.password && (
+                  <p className="text-red-400 text-sm mt-2">
+                    {errors.password.message}
+                  </p>
+                )}
+
+                {/* Generator Options */}
+                <div className="mt-5 p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+
+                  {/* Length */}
+                  <div>
+                    <label className="text-sm text-slate-300 block mb-2">
+                      Password Length
+                    </label>
+
+                    <input
+                      type="range"
+                      min="4"
+                      max="40"
+                      value={passwordLength}
+                      onChange={(e) => setPasswordLength(Number(e.target.value))}
+                      className="w-full"
+                    />
+
+                    <p className="text-cyan-400 text-sm mt-1">
+                      {passwordLength} Characters
+                    </p>
+                  </div>
+
+                  {/* Options */}
+                  <div className="grid grid-cols-2 gap-3">
+
+                    <label className="flex items-center gap-3 text-sm text-slate-300">
+                      <input
+                        type="checkbox"
+                        checked={includeUppercase}
+                        onChange={() => setIncludeUppercase(!includeUppercase)}
+                      />
+
+                      Uppercase
+                    </label>
+
+                    <label className="flex items-center gap-3 text-sm text-slate-300">
+                      <input
+                        type="checkbox"
+                        checked={includeLowercase}
+                        onChange={() => setIncludeLowercase(!includeLowercase)}
+                      />
+
+                      Lowercase
+                    </label>
+
+                    <label className="flex items-center gap-3 text-sm text-slate-300">
+                      <input
+                        type="checkbox"
+                        checked={includeNumbers}
+                        onChange={() => setIncludeNumbers(!includeNumbers)}
+                      />
+
+                      Numbers
+                    </label>
+
+                    <label className="flex items-center gap-3 text-sm text-slate-300">
+                      <input
+                        type="checkbox"
+                        checked={includeSpecial}
+                        onChange={() => setIncludeSpecial(!includeSpecial)}
+                      />
+
+                      Special
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold text-lg hover:scale-[1.02] transition-transform shadow-xl shadow-cyan-500/30"
+              >
+                Save Password
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
