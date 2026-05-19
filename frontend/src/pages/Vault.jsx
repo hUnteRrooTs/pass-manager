@@ -32,6 +32,9 @@ export default function VaultPage() {
   const [visiblePasswordId, setVisiblePasswordId] = useState(null);
 
   const [editingPassword, setEditingPassword] = useState(null)
+  const [copiedPasswordId, setCopiedPasswordId] = useState(null);
+
+  const [copyTimer, setCopyTimer] = useState(0);
   const logout = () => {
     localStorage.removeItem("user");
 
@@ -107,7 +110,7 @@ export default function VaultPage() {
     for (let i = 0; i < passwords.length; i++) {
 
       const password =
-        passwords[i].decryptedPassword;
+        passwords[i].password;
 
       if (!password) {
         continue;
@@ -342,6 +345,44 @@ export default function VaultPage() {
                       className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
                     >
                       {visiblePasswordId === item.pid ? "Hide" : "View"}
+                    </button>
+                    <button
+                      onClick={() => {
+
+                        navigator.clipboard.writeText(item.password);
+
+                        setCopiedPasswordId(item.pid);
+
+                        setCopyTimer(30);
+
+                        const interval = setInterval(() => {
+
+                          setCopyTimer((prev) => {
+
+                            if (prev <= 1) {
+
+                              clearInterval(interval);
+
+                              navigator.clipboard.writeText("");
+
+                              setCopiedPasswordId(null);
+
+                              return 0;
+                            }
+
+                            return prev - 1;
+                          });
+
+                        }, 1000);
+                      }}
+
+                      className="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/20 transition-all"
+                    >
+                      {
+                        copiedPasswordId === item.pid
+                          ? `Copied (${copyTimer}s)`
+                          : "Copy"
+                      }
                     </button>
                     <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all" onClick={() => {
                       setShowModal(true)
