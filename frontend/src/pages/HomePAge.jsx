@@ -1,7 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function HomePage() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(null)
+  const logout = () => {
+    localStorage.removeItem("user");
+  };
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")))
+  }, [])
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white overflow-hidden relative">
       {/* Background Glow */}
@@ -22,17 +29,26 @@ function HomePage() {
         <nav className="hidden lg:flex items-center gap-8 text-slate-300">
           <a href="#features" className="hover:text-white transition-colors">Features</a>
           <a href="#security" className="hover:text-white transition-colors">Security</a>
-          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+          <a href="/vault" className="hover:text-white transition-colors">Vault</a>
         </nav>
-
-        <div className="flex items-center gap-2">
-          <a className="hidden sm:block px-4 lg:px-5 py-2 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all text-sm lg:text-base" href='/login'>
-            Login
-          </a>
-          <a className="px-3 sm:px-4 lg:px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 text-xs sm:text-sm lg:text-base whitespace-nowrap" href='/signup'>
-            Signup
-          </a>
-        </div>
+        {
+          !user ? (
+            <div className="flex items-center gap-2">
+              <a className="hidden sm:block px-4 lg:px-5 py-2 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all text-sm lg:text-base" href='/login'>
+                Login
+              </a>
+              <a className="px-3 sm:px-4 lg:px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 text-xs sm:text-sm lg:text-base whitespace-nowrap" href='/signup'>
+                Signup
+              </a>
+            </div>
+          ) : (<button
+            onClick={logout}
+            className="px-5 py-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+          >
+            Logout
+          </button>
+          )
+        }
       </header>
 
       {/* Hero Section */}

@@ -30,6 +30,8 @@ export default function VaultPage() {
   const [passwords, setPasswords] = useState([]);
 
   const [visiblePasswordId, setVisiblePasswordId] = useState(null);
+
+  const [editingPassword, setEditingPassword] = useState(null)
   const logout = () => {
     localStorage.removeItem("user");
 
@@ -41,22 +43,40 @@ export default function VaultPage() {
     try {
 
       const user = JSON.parse(localStorage.getItem("user"));
+      let response
 
-      const response = await fetch("http://localhost:3000/vault", {
-        method: "POST",
+      if (editingPassword) {
+        response = await fetch(`http://localhost:3000/vault/${editingPassword.pid}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          body: JSON.stringify({
+            uid: user.uid,
+            website: data.website,
+            username: data.username,
+            password: data.password,
+          }),
+        })
+      }
+      else {
+        response = await fetch("http://localhost:3000/vault", {
+          method: "POST",
 
-        body: JSON.stringify({
-          uid: user.uid,
-          website: data.website,
-          username: data.username,
-          password: data.password,
-        }),
-      });
+          headers: {
+            "Content-Type": "application/json",
+          },
 
+          body: JSON.stringify({
+            uid: user.uid,
+            website: data.website,
+            username: data.username,
+            password: data.password,
+          }),
+        });
+
+      }
       const text = await response.text();
 
       if (!response.ok) {
@@ -69,7 +89,6 @@ export default function VaultPage() {
       reset();
 
       setShowModal(false);
-
     } catch (err) {
 
       console.log(err);
@@ -77,8 +96,57 @@ export default function VaultPage() {
       alert("Something went wrong");
     }
   };
+  function calculateSecurityScore(passwords) {
+
+    if (passwords.length === 0) {
+      return 0;
+    }
+
+    let totalScore = 0;
+
+    for (let i = 0; i < passwords.length; i++) {
+
+      const password =
+        passwords[i].decryptedPassword;
+
+      if (!password) {
+        continue;
+      }
+
+      let score = 0;
+
+      if (password.length >= 12) {
+        score += 25;
+      }
+
+      if (/[A-Z]/.test(password)) {
+        score += 20;
+      }
+
+      if (/[a-z]/.test(password)) {
+        score += 20;
+      }
+
+      if (/[0-9]/.test(password)) {
+        score += 20;
+      }
+
+      if (/[^A-Za-z0-9]/.test(password)) {
+        score += 15;
+      }
+
+      totalScore += score;
+      console.log(score)
+    }
+    return Math.round(
+      totalScore / passwords.length
+    );
+  }
 
   useEffect(() => {
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      navigate("/login")
+    }
 
     const fetchPasswords = async () => {
 
@@ -101,6 +169,7 @@ export default function VaultPage() {
     fetchPasswords();
 
   }, []);
+
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
 
@@ -166,7 +235,7 @@ export default function VaultPage() {
             </p>
 
             <h3 className="mt-3 text-4xl font-bold">
-              24
+              {passwords.length}
             </h3>
           </div>
 
@@ -196,7 +265,7 @@ export default function VaultPage() {
             </p>
 
             <h3 className="mt-3 text-4xl font-bold text-cyan-400">
-              98%
+              {calculateSecurityScore(passwords)}
             </h3>
           </div>
         </div>
@@ -274,11 +343,31 @@ export default function VaultPage() {
                     >
                       {visiblePasswordId === item.pid ? "Hide" : "View"}
                     </button>
-                    <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                    <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all" onClick={() => {
+                      setShowModal(true)
+                      setValue("username", item.username)
+                      setValue("password", item.password)
+                      setValue("website", item.website)
+                      setEditingPassword(item)
+                    }}>
                       Edit
                     </button>
 
-                    <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all">
+                    <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all" onClick={async () => {
+                      try {
+                        const response = await fetch(`http://localhost:3000/vault/${item.pid}`, { method: "DELETE" })
+                        const text = await response.text()
+                        if (!response.ok) {
+                          alert(text)
+                          return;
+                        }
+                        setPasswords(passwords.filter((password) => password.pid !== item.pid))
+                      }
+                      catch (err) {
+                        console.log(err)
+                        alert("Something went wrong")
+                      }
+                    }}>
                       Delete
                     </button>
 
