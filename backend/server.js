@@ -122,7 +122,7 @@ app.post("/login", (req, res) => {
       if (!match) {
         return res.status(401).send("Invalid credentials");
       }
-      mpassword = info.password
+      row.password = info.password
       res.send(row);
     }
   );
@@ -178,21 +178,27 @@ app.post("/vault", async (req, res) => {
 });
 
 const decrypt = (text, mKey) => {
-  const parts = text.split(":");
-  const iv = Buffer.from(parts[0], "hex")
-  const key = crypto.createHash("sha256").update(mKey).digest()
-  const decipher = crypto.createDecipheriv(
-    "aes-256-cbc",
-    key,
-    iv
-  )
-  let decrypted = decipher.update(
-    parts[1],
-    "hex",
-    "utf8"
-  )
-  decrypted += decipher.final("utf8")
-  return decrypted
+  try {
+
+    const parts = text.split(":");
+    const iv = Buffer.from(parts[0], "hex")
+    const key = crypto.createHash("sha256").update(mKey).digest()
+    const decipher = crypto.createDecipheriv(
+      "aes-256-cbc",
+      key,
+      iv
+    )
+    let decrypted = decipher.update(
+      parts[1],
+      "hex",
+      "utf8"
+    )
+    decrypted += decipher.final("utf8")
+    return decrypted
+  } catch (err) {
+    console.log(err)
+    return null
+  }
 }
 app.get("/vault/:uid", (req, res) => {
 

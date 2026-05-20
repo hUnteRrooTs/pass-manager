@@ -38,6 +38,7 @@ export default function LoginPage() {
     if (response.ok) {
       const user = await response.json();
       localStorage.setItem("user", JSON.stringify(user));
+      console.log(data)
       navigate("/vault");
     } else {
       alert("Invalid credentials");
@@ -85,15 +86,6 @@ export default function LoginPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-12">
-            <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
-              <p className="text-3xl font-bold">
-                50K+
-              </p>
-
-              <p className="text-slate-400 mt-1">
-                Users
-              </p>
-            </div>
 
             <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
               <p className="text-3xl font-bold">

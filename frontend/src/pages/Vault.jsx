@@ -244,31 +244,20 @@ export default function VaultPage() {
 
           <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
             <p className="text-slate-400 text-sm">
-              Secure Notes
+              Encryption
             </p>
 
-            <h3 className="mt-3 text-4xl font-bold">
-              8
+            <h3 className="mt-3 text-4xl font-bold text-cyan-400">
+              AES
             </h3>
           </div>
-
-          <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
-            <p className="text-slate-400 text-sm">
-              Saved Cards
-            </p>
-
-            <h3 className="mt-3 text-4xl font-bold">
-              3
-            </h3>
-          </div>
-
           <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
             <p className="text-slate-400 text-sm">
               Security Score
             </p>
 
-            <h3 className="mt-3 text-4xl font-bold text-cyan-400">
-              {calculateSecurityScore(passwords)}
+            <h3 className={`mt-3 text-4xl font-bold text-cyan-400 ${calculateSecurityScore(passwords) > 80 ? "text-green-400" : calculateSecurityScore(passwords) < 50 ? "text-red-400" : "text-cyan-400"}`}>
+              {calculateSecurityScore(passwords)}%
             </h3>
           </div>
         </div>

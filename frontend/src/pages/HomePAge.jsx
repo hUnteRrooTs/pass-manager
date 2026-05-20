@@ -75,19 +75,15 @@ function HomePage() {
               Start Free
             </button>
 
-            <button className="w-full sm:w-auto px-7 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all text-base sm:text-lg">
+            <a className="w-full sm:w-auto px-7 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all text-base sm:text-lg" href='/demo'>
               Live Demo
-            </button>
+            </a>
           </div>
 
           <div className="mt-10 sm:mt-12 grid grid-cols-3 gap-4 text-slate-400 text-xs sm:text-sm max-w-md mx-auto lg:mx-0">
             <div>
               <p className="text-2xl sm:text-3xl font-bold text-white">256-bit</p>
               Encryption
-            </div>
-            <div>
-              <p className="text-2xl sm:text-3xl font-bold text-white">10K+</p>
-              Users
             </div>
             <div>
               <p className="text-2xl sm:text-3xl font-bold text-white">99.9%</p>
