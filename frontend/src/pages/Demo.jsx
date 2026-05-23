@@ -34,14 +34,12 @@ export default function DemoPage() {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
 
-      {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-120px] left-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
 
         <div className="absolute bottom-[-150px] right-[-100px] w-[350px] h-[350px] bg-purple-500/20 blur-3xl rounded-full" />
       </div>
 
-      {/* Navbar */}
       <header className="relative z-10 border-b border-white/10 backdrop-blur-xl">
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
@@ -66,10 +64,8 @@ export default function DemoPage() {
         </div>
       </header>
 
-      {/* Main */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
 
-        {/* Hero */}
         <div className="mb-12">
 
           <p className="inline-flex px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-300 text-sm">
@@ -89,7 +85,6 @@ export default function DemoPage() {
           </p>
         </div>
 
-        {/* Stats */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
 
           <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
@@ -133,7 +128,6 @@ export default function DemoPage() {
           </div>
         </div>
 
-        {/* Vault */}
         <div className="rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-2xl overflow-hidden">
 
           <div className="p-6 border-b border-white/10 flex items-center justify-between">
@@ -155,7 +149,6 @@ export default function DemoPage() {
             </button>
           </div>
 
-          {/* Password List */}
           <div className="divide-y divide-white/10">
 
             {demoPasswords.map((item) => (
@@ -219,7 +212,6 @@ export default function DemoPage() {
           </div>
         </div>
 
-        {/* Bottom CTA */}
         <div className="mt-12 text-center">
 
           <h3 className="text-4xl font-bold">

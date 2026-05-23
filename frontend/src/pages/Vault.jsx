@@ -176,14 +176,12 @@ export default function VaultPage() {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
 
-      {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-120px] left-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
 
         <div className="absolute bottom-[-150px] right-[-100px] w-[350px] h-[350px] bg-purple-500/20 blur-3xl rounded-full" />
       </div>
 
-      {/* Navbar */}
       <header className="relative z-10 border-b border-white/10 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
 
@@ -206,10 +204,8 @@ export default function VaultPage() {
         </div>
       </header>
 
-      {/* Main */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
 
-        {/* Welcome */}
         <div className="mb-10">
 
           <p className="inline-flex px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-300 text-sm">
@@ -229,7 +225,6 @@ export default function VaultPage() {
           </p>
         </div>
 
-        {/* Stats */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
 
           <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
@@ -262,7 +257,6 @@ export default function VaultPage() {
           </div>
         </div>
 
-        {/* Password Vault */}
         <div className="rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-2xl overflow-hidden">
 
           <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -285,7 +279,6 @@ export default function VaultPage() {
             </button>
           </div>
 
-          {/* Password List */}
           <div className="divide-y divide-white/10">
 
             {passwords.length === 0 ? (
@@ -409,13 +402,11 @@ export default function VaultPage() {
         </div>
       </main>
 
-      {/* Add Password Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center px-4">
 
           <div className="w-full max-w-lg rounded-[32px] bg-[#0b1120] border border-white/10 p-8 shadow-2xl shadow-cyan-500/10 relative">
 
-            {/* Close */}
             <button
               onClick={() => setShowModal(false)}
               className="absolute top-5 right-5 w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
@@ -435,7 +426,6 @@ export default function VaultPage() {
               onSubmit={handleSubmit(onSubmit)}
             >
 
-              {/* Website */}
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">
                   Website
@@ -460,7 +450,6 @@ export default function VaultPage() {
                 )}
               </div>
 
-              {/* Username */}
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">
                   Username / Email
@@ -485,7 +474,6 @@ export default function VaultPage() {
                 )}
               </div>
 
-              {/* Password */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-sm text-slate-300">
@@ -548,10 +536,8 @@ export default function VaultPage() {
                   </p>
                 )}
 
-                {/* Generator Options */}
                 <div className="mt-5 p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
 
-                  {/* Length */}
                   <div>
                     <label className="text-sm text-slate-300 block mb-2">
                       Password Length
@@ -571,7 +557,6 @@ export default function VaultPage() {
                     </p>
                   </div>
 
-                  {/* Options */}
                   <div className="grid grid-cols-2 gap-3">
 
                     <label className="flex items-center gap-3 text-sm text-slate-300">

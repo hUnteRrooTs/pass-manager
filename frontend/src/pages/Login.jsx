@@ -47,7 +47,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden flex items-center justify-center px-4 py-10">
-      {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-120px] left-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
 
@@ -55,7 +54,6 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-5xl grid lg:grid-cols-2 rounded-[32px] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl shadow-cyan-500/10">
-        {/* Left Side */}
         <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border-r border-white/10">
           <div>
             <div className="flex items-center gap-3 mb-10">
@@ -99,7 +97,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Right Side */}
         <div className="p-6 sm:p-10 lg:p-14 flex items-center justify-center">
           <div className="w-full max-w-md">
             <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
@@ -124,7 +121,6 @@ export default function LoginPage() {
               className="mt-8 space-y-5"
               onSubmit={handleSubmit(onSubmit)}
             >
-              {/* Email */}
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">
                   Email Address
@@ -147,7 +143,6 @@ export default function LoginPage() {
                 )}
               </div>
 
-              {/* Password */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-sm text-slate-300">

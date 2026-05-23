@@ -70,7 +70,6 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden flex items-center justify-center px-4 py-10">
-      {/* Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-120px] left-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
 
@@ -131,7 +130,6 @@ export default function SignupPage() {
           </div>
         </div>
 
-        {/* Right Side */}
         <div className="p-6 sm:p-10 lg:p-14 flex items-center justify-center">
           <div className="w-full max-w-md">
             <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
@@ -156,7 +154,6 @@ export default function SignupPage() {
               className="mt-8 space-y-5"
               onSubmit={handleSubmit(onSubmit)}
             >
-              {/* Name */}
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">
                   Full Name
@@ -179,7 +176,6 @@ export default function SignupPage() {
                 )}
               </div>
 
-              {/* Email */}
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">
                   Email Address
@@ -202,7 +198,6 @@ export default function SignupPage() {
                 )}
               </div>
 
-              {/* Password */}
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">
                   Master Password
@@ -225,7 +220,6 @@ export default function SignupPage() {
                 )}
               </div>
 
-              {/* Confirm Password */}
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">
                   Confirm Password

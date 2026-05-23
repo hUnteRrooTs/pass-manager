@@ -11,13 +11,11 @@ function HomePage() {
   }, [])
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white overflow-hidden relative">
-      {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-120px] left-[-120px] w-[260px] sm:w-[400px] h-[260px] sm:h-[400px] bg-cyan-500/20 blur-3xl rounded-full" />
         <div className="absolute bottom-[-150px] right-[-120px] w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] bg-purple-500/20 blur-3xl rounded-full" />
       </div>
 
-      {/* Navbar */}
       <header className="relative z-10 flex items-center justify-between px-3 sm:px-6 lg:px-10 xl:px-16 2xl:px-24 py-4 sm:py-5 w-full">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg shadow-cyan-500/30">
@@ -51,7 +49,6 @@ function HomePage() {
         }
       </header>
 
-      {/* Hero Section */}
       <section className="relative z-10 w-full px-4 sm:px-6 lg:px-10 xl:px-16 2xl:px-24 py-10 sm:py-16 lg:py-24 grid lg:grid-cols-2 gap-12 xl:gap-24 items-center min-h-[85vh]">
         <div className="text-center lg:text-left order-2 lg:order-1">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-xs sm:text-sm text-cyan-300 mb-6">
