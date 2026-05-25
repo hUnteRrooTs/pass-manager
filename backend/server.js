@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const axios = require("axios")
 let mpassword = ""
-const secureKey = "AnwithKML"
+const secureKey = process.env.SECRETKEY_JWT
 
 app.use(express.json());
 app.use(cookieParser())
