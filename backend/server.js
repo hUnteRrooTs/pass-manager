@@ -1,15 +1,27 @@
+require("dotenv").config();
 const express = require("express")
 const cors = require("cors")
 const sqlite3 = require("sqlite3").verbose()
 const app = express()
 const bcrypt = require("bcrypt");
 const crypto = require("crypto")
+const jwt = require("jsonwebtoken")
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const axios = require("axios")
 let mpassword = ""
+const secureKey = "AnwithKML"
 
 app.use(express.json());
+app.use(cookieParser())
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true
+}))
+app.use(session({
+  secret: "AnwithKML",
+  resave: false,
+  saveUninitialized: false
 }))
 
 const db = new sqlite3.Database("./database/passwords.db", (err) => {
@@ -25,7 +37,8 @@ db.run(`
       uid INTEGER PRIMARY KEY AUTOINCREMENT,
       fname VARCAHR(20),
       mpassword VARCHAR(50),
-      email VARCHAR(30) UNIQUE
+      email VARCHAR(30) UNIQUE,
+      provider CHECK(provider IN ('local', 'github'))
 );
 `)
 
@@ -39,6 +52,13 @@ db.run(`
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 `)
+
+const set = (data) => {
+  return jwt.sign(data, secureKey)
+}
+const get = (token) => {
+  return jwt.verify(token, secureKey)
+}
 
 app.get("/", (req, res) => {
   res.send("Where are are")
@@ -71,8 +91,8 @@ app.post("/signup", async (req, res) => {
         const hashedPassword = await bcrypt.hash(info.password, 10);
 
         db.run(
-          `INSERT INTO users (fname, mpassword, email) VALUES (?, ?, ?)`,
-          [info.fname, hashedPassword, info.email],
+          `INSERT INTO users (fname, mpassword, email, provider) VALUES (?, ?, ?, ?)`,
+          [info.fname, hashedPassword, info.email, 'local'],
 
           (err) => {
 
@@ -86,6 +106,7 @@ app.post("/signup", async (req, res) => {
       }
     );
 
+
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -98,7 +119,7 @@ app.post("/login", (req, res) => {
     email: req.body.email,
     password: req.body.password
   }
-  console.log(info)
+  // console.log(info)
   db.get(
     `SELECT * FROM users WHERE email=?`,
     [info.email],
@@ -122,10 +143,22 @@ app.post("/login", (req, res) => {
       if (!match) {
         return res.status(401).send("Invalid credentials");
       }
-      row.password = info.password
-      res.send(row);
+      const token = set(row)
+      // console.log(row)
+      // console.log(token)
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax"
+      })
+      res.send("Logged In")
     }
   );
+})
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("token")
+  res.send("Logged Out")
 })
 
 const encrypt = (data, mKey) => {
@@ -200,6 +233,7 @@ const decrypt = (text, mKey) => {
     return null
   }
 }
+
 app.get("/vault/:uid", (req, res) => {
 
   const uid = req.params.uid;
@@ -244,6 +278,130 @@ app.delete("/vault/:pid", (req, res) => {
     res.send("Deleted")
   })
 })
+
+app.post("/getuid", (req, res) => {
+  console.log("From GetUID")
+  const data = jwt.verify(req.cookies.token, secureKey)
+  console.log(data)
+  res.send(data)
+})
+
+app.get("/auth/github", (req, res) => {
+  res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=user:email`)
+})
+
+app.get("/auth/github/callback", async (req, res) => {
+  const code = req.query.code;
+  console.log("Came to here")
+
+  const tokenResponse = await axios.post(
+    `https://github.com/login/oauth/access_token`,
+    {
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      code,
+    },
+    {
+      headers: { Accept: "application/json" },
+    }
+  );
+  const accessToken = tokenResponse.data.access_token;
+  const userResponse = await axios.get(
+    "https://api.github.com/user",
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  const githubUser = userResponse.data;
+  const token = jwt.sign(
+    {
+      id: githubUser.id,
+      username: githubUser.login,
+    },
+    secureKey
+  );
+  const emailResponse = await axios.get(
+    "https://api.github.com/user/emails",
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  const primaryEmail =
+    emailResponse.data.find(
+      (email) => email.primary
+    );
+  db.get(
+    `SELECT * FROM users WHERE email=?`,
+    [primaryEmail.email],
+
+    (err, row) => {
+
+      if (err) {
+        return res.status(500).send(err.message);
+      }
+
+      // USER ALREADY EXISTS
+      if (row) {
+
+        const user = {
+          uid: row.uid,
+          fname: row.fname,
+          email: row.email
+        };
+
+        const encoded =
+          encodeURIComponent(
+            JSON.stringify(user)
+          );
+
+        return res.redirect(
+          `http://localhost:5173/oauth-success?user=${encoded}`
+        );
+      }
+
+      // CREATE NEW USER
+      db.run(
+        `INSERT INTO users
+      (fname, mpassword, email, provider)
+      VALUES (?, ?, ?, ?)`,
+        [
+          githubUser.login,
+          null,
+          primaryEmail.email,
+          "github"
+        ],
+
+        function (err) {
+
+          if (err) {
+            return res.status(500).send(err.message);
+          }
+
+          const user = {
+            uid: this.lastID,
+            fname: githubUser.login,
+            email: primaryEmail.email
+          };
+
+          const encoded =
+            encodeURIComponent(
+              JSON.stringify(user)
+            );
+
+          res.redirect(
+            `http://localhost:5173/oauth-success?user=${encoded}`
+          );
+        }
+      );
+    }
+  );
+});
 
 app.listen(3000, () => {
   console.log("Server is running")

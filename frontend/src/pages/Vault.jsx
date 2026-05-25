@@ -37,7 +37,7 @@ export default function VaultPage() {
   const [copyTimer, setCopyTimer] = useState(0);
   const logout = () => {
     localStorage.removeItem("user");
-
+    localStorage.removeItem("uid");
     navigate("/login");
   };
 

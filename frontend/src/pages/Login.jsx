@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-
 const loginSchema = z.object({
   email: z
     .string()
@@ -27,7 +26,7 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     const response = await fetch("http://localhost:3000/login", {
       method: "POST",
-
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -36,13 +35,25 @@ export default function LoginPage() {
     });
 
     if (response.ok) {
-      const user = await response.json();
-      localStorage.setItem("user", JSON.stringify(user));
-      console.log(data)
+      const getUid = await fetch("http://localhost:3000/getuid/", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      const uid = await getUid.json();
+      console.log(uid)
+      console.log("Login worked")
+      const data = {
+        "fname": uid.fname, "uid": uid.uid, "email": uid.email
+      }
+      localStorage.setItem("user", JSON.stringify(data))
       navigate("/vault");
     } else {
       alert("Invalid credentials");
     }
+
   };
 
   return (
@@ -199,7 +210,9 @@ export default function LoginPage() {
                 Google
               </button>
 
-              <button className="py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium">
+              <button className="py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium" onClick={() => {
+                window.location.href = "http://localhost:3000/auth/github"
+              }}>
                 GitHub
               </button>
             </div>

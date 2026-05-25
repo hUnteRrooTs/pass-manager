@@ -4,6 +4,7 @@ function HomePage() {
   const [user, setUser] = useState(null)
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("uid");
   };
 
   useEffect(() => {
