@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const axios = require("axios")
+const nodemailer = require("nodemailer")
 let mpassword = ""
 const secureKey = process.env.SECRETKEY_JWT
 
@@ -19,10 +20,31 @@ app.use(cors({
   credentials: true
 }))
 app.use(session({
-  secret: "AnwithKML",
+  secret: process.env.SECRETKEY_JWT,
   resave: false,
   saveUninitialized: false
 }))
+
+async function createTransporter() {
+
+  const testAccount =
+    await nodemailer.createTestAccount();
+
+  console.log(testAccount);
+
+  const transporter =
+    nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass
+      }
+    });
+
+  return transporter;
+}
 
 const db = new sqlite3.Database("./database/passwords.db", (err) => {
   if (err) {
@@ -401,6 +423,33 @@ app.get("/auth/github/callback", async (req, res) => {
       );
     }
   );
+});
+
+app.post("/send-code", async (req, res) => {
+
+  const transporter =
+    await createTransporter();
+
+  const code =
+    Math.floor(
+      100000 + Math.random() * 900000
+    );
+
+  const info =
+    await transporter.sendMail({
+      from: "Vaultify <vault@test.com>",
+      to: req.body.email,
+      subject: "Verification Code",
+      text: `Code: ${code}`
+    });
+
+  console.log(
+    nodemailer.getTestMessageUrl(info)
+  );
+
+  res.send({
+    code: code
+  });
 });
 
 app.listen(3000, () => {

@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 const signupSchema = z
   .object({
@@ -27,27 +29,87 @@ const signupSchema = z
   });
 
 export default function SignupPage() {
+
+  const navigate = useNavigate();
+
+  const [sentCode, setSentCode] = useState("");
+
+  const [userCode, setUserCode] = useState("");
+
+  const [codeSent, setCodeSent] = useState(false);
+
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = async (data) => {
+  const sendCode = async () => {
+
+    const email = getValues("email");
+
+    if (!email) {
+      return alert("Enter email first");
+    }
 
     try {
 
-      const response = await fetch("http://localhost:3000/signup", {
-        method: "POST",
+      const response = await fetch(
+        "http://localhost:3000/send-code",
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify(data),
-      });
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await response.json();
+
+      setSentCode(String(data.code));
+
+      setCodeSent(true);
+
+      alert("Verification code sent");
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Failed to send code");
+    }
+  };
+
+  const onSubmit = async (data) => {
+
+    if (!codeSent) {
+      return alert("Please verify your email");
+    }
+
+    if (userCode !== sentCode) {
+      return alert("Invalid verification code");
+    }
+
+    try {
+
+      const response = await fetch(
+        "http://localhost:3000/signup",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify(data),
+        }
+      );
 
       const text = await response.text();
 
@@ -70,17 +132,23 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden flex items-center justify-center px-4 py-10">
+
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+
         <div className="absolute top-[-120px] left-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
 
         <div className="absolute bottom-[-150px] right-[-100px] w-[350px] h-[350px] bg-purple-500/20 blur-3xl rounded-full" />
       </div>
 
       <div className="relative z-10 w-full max-w-6xl grid lg:grid-cols-2 rounded-[32px] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl shadow-cyan-500/10">
+
         {/* Left Side */}
         <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border-r border-white/10">
+
           <div>
+
             <div className="flex items-center gap-3 mb-10">
+
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold text-xl">
                 🔒
               </div>
@@ -108,7 +176,9 @@ export default function SignupPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-12">
+
             <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+
               <p className="text-3xl font-bold">
                 256-bit
               </p>
@@ -119,6 +189,7 @@ export default function SignupPage() {
             </div>
 
             <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+
               <p className="text-3xl font-bold">
                 99.9%
               </p>
@@ -130,9 +201,13 @@ export default function SignupPage() {
           </div>
         </div>
 
+        {/* Right Side */}
         <div className="p-6 sm:p-10 lg:p-14 flex items-center justify-center">
+
           <div className="w-full max-w-md">
+
             <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold text-xl">
                 🔒
               </div>
@@ -154,7 +229,10 @@ export default function SignupPage() {
               className="mt-8 space-y-5"
               onSubmit={handleSubmit(onSubmit)}
             >
+
+              {/* Full Name */}
               <div>
+
                 <label className="text-sm text-slate-300 mb-2 block">
                   Full Name
                 </label>
@@ -176,7 +254,9 @@ export default function SignupPage() {
                 )}
               </div>
 
+              {/* Email */}
               <div>
+
                 <label className="text-sm text-slate-300 mb-2 block">
                   Email Address
                 </label>
@@ -196,9 +276,40 @@ export default function SignupPage() {
                     {errors.email.message}
                   </p>
                 )}
+
+                <button
+                  type="button"
+                  onClick={sendCode}
+                  className="mt-3 px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold"
+                >
+                  Send Verification Code
+                </button>
               </div>
 
+              {/* Verification Code */}
+              {codeSent && (
+
+                <div>
+
+                  <label className="text-sm text-slate-300 mb-2 block">
+                    Verification Code
+                  </label>
+
+                  <input
+                    type="text"
+                    placeholder="Enter code"
+                    value={userCode}
+                    onChange={(e) =>
+                      setUserCode(e.target.value)
+                    }
+                    className="w-full px-5 py-4 rounded-2xl bg-black/30 border border-white/10 outline-none focus:border-cyan-400"
+                  />
+                </div>
+              )}
+
+              {/* Password */}
               <div>
+
                 <label className="text-sm text-slate-300 mb-2 block">
                   Master Password
                 </label>
@@ -220,7 +331,9 @@ export default function SignupPage() {
                 )}
               </div>
 
+              {/* Confirm Password */}
               <div>
+
                 <label className="text-sm text-slate-300 mb-2 block">
                   Confirm Password
                 </label>
@@ -249,39 +362,6 @@ export default function SignupPage() {
                 Create Secure Vault
               </button>
             </form>
-
-            <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/10" />
-              </div>
-
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-[#050816] px-4 text-slate-400">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <button className="py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium">
-                Google
-              </button>
-
-              <button className="py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium">
-                GitHub
-              </button>
-            </div>
-
-            <p className="mt-8 text-center text-slate-400">
-              Already have an account?{" "}
-
-              <a
-                className="text-cyan-400 cursor-pointer hover:text-cyan-300 transition-colors"
-                href="/login"
-              >
-                Sign In
-              </a>
-            </p>
           </div>
         </div>
       </div>
