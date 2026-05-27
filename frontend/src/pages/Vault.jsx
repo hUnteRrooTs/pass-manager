@@ -49,7 +49,7 @@ export default function VaultPage() {
       let response
 
       if (editingPassword) {
-        response = await fetch(`http://localhost:3000/vault/${editingPassword.pid}`, {
+        response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/vault/${editingPassword.pid}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export default function VaultPage() {
         })
       }
       else {
-        response = await fetch("http://localhost:3000/vault", {
+        response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/vault`, {
           method: "POST",
 
           headers: {
@@ -156,7 +156,7 @@ export default function VaultPage() {
       try {
 
         const response = await fetch(
-          `http://localhost:3000/vault/${user.uid}`
+          `${import.meta.env.VITE_BACKEND_URL}/vault/${user.uid}`
         );
 
         const data = await response.json();
@@ -378,7 +378,7 @@ export default function VaultPage() {
 
                     <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all" onClick={async () => {
                       try {
-                        const response = await fetch(`http://localhost:3000/vault/${item.pid}`, { method: "DELETE" })
+                        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/vault/${item.pid}`, { method: "DELETE" })
                         const text = await response.text()
                         if (!response.ok) {
                           alert(text)

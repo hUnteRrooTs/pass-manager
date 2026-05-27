@@ -24,7 +24,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data) => {
-    const response = await fetch("http://localhost:3000/login", {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -35,7 +35,7 @@ export default function LoginPage() {
     });
 
     if (response.ok) {
-      const getUid = await fetch("http://localhost:3000/getuid/", {
+      const getUid = await fetch(`${import.meta.env.VITE_BACKEND_URL}/getuid/`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -211,7 +211,7 @@ export default function LoginPage() {
               </button>
 
               <button className="py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium" onClick={() => {
-                window.location.href = "http://localhost:3000/auth/github"
+                window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/github`
               }}>
                 GitHub
               </button>

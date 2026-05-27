@@ -9,14 +9,15 @@ const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const axios = require("axios")
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
+const { send } = require("process");
 let mpassword = ""
 const secureKey = process.env.SECRETKEY_JWT
 
 app.use(express.json());
 app.use(cookieParser())
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND_URL,
   credentials: true
 }))
 app.use(session({
@@ -25,26 +26,6 @@ app.use(session({
   saveUninitialized: false
 }))
 
-async function createTransporter() {
-
-  const testAccount =
-    await nodemailer.createTestAccount();
-
-  console.log(testAccount);
-
-  const transporter =
-    nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass
-      }
-    });
-
-  return transporter;
-}
 
 const db = new sqlite3.Database("./database/passwords.db", (err) => {
   if (err) {
@@ -75,6 +56,13 @@ db.run(`
 );
 `)
 
+db.run(`
+  CREATE TABLE IF NOT EXISTS otp(
+  email VARCHAR(30) UNIQUE,
+  code CHAR(6) PRIMARY KEY
+);
+`)
+
 const set = (data) => {
   return jwt.sign(data, secureKey)
 }
@@ -86,54 +74,57 @@ app.get("/", (req, res) => {
   res.send("Where are are")
 })
 
-app.post("/signup", async (req, res) => {
+app.post("/signup", (req, res) => {
+  console.log("In Signup page");
 
   const info = {
     fname: req.body.fname,
     email: req.body.email,
-    password: req.body.psswd
+    password: req.body.psswd,
+    code: req.body.code
   };
 
-  try {
+  db.get(`SELECT code FROM otp WHERE email=?`, [info.email], (err, row) => {
+    if (err) {
+      return res.status(500).send("Something Went Wrong");
+    }
 
-    db.get(
-      `SELECT * FROM users WHERE email=?`,
-      [info.email],
+    if (!row) {
+      return res.status(400).send("OTP not found");
+    }
 
-      async (err, row) => {
+    if (String(row.code) !== String(info.code)) {
+      return res.status(401).send("Invalid Verification Code");
+    }
 
-        if (err) {
-          return res.status(500).send(err.message);
-        }
-
-        if (row) {
-          return res.status(409).send("Email already exists");
-        }
-
-        const hashedPassword = await bcrypt.hash(info.password, 10);
-
-        db.run(
-          `INSERT INTO users (fname, mpassword, email, provider) VALUES (?, ?, ?, ?)`,
-          [info.fname, hashedPassword, info.email, 'local'],
-
-          (err) => {
-
-            if (err) {
-              return res.status(500).send(err.message);
-            }
-
-            res.send("Account created");
-          }
-        );
+    db.get(`SELECT * FROM users WHERE email=?`, [info.email], async (err, userRow) => {
+      if (err) {
+        return res.status(500).send(err.message);
       }
-    );
 
+      if (userRow) {
+        return res.status(409).send("Email already exists");
+      }
 
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+      const hashedPassword = await bcrypt.hash(info.password, 10);
+
+      db.run(
+        `INSERT INTO users (fname, mpassword, email, provider) VALUES (?, ?, ?, ?)`,
+        [info.fname, hashedPassword, info.email, "local"],
+        (err) => {
+          if (err) {
+            return res.status(500).send(err.message);
+          }
+
+          return res.status(201).json({
+            ok: true,
+            message: "Account created"
+          });
+        }
+      );
+    });
+  });
 });
-
 
 app.post("/login", (req, res) => {
   console.log(" Login Its working")
@@ -314,7 +305,6 @@ app.get("/auth/github", (req, res) => {
 
 app.get("/auth/github/callback", async (req, res) => {
   const code = req.query.code;
-  console.log("Came to here")
 
   const tokenResponse = await axios.post(
     `https://github.com/login/oauth/access_token`,
@@ -383,7 +373,7 @@ app.get("/auth/github/callback", async (req, res) => {
           );
 
         return res.redirect(
-          `http://localhost:5173/oauth-success?user=${encoded}`
+          `${process.env.FRONTEND_URL}/oauth-success?user=${encoded}`
         );
       }
 
@@ -417,7 +407,7 @@ app.get("/auth/github/callback", async (req, res) => {
             );
 
           res.redirect(
-            `http://localhost:5173/oauth-success?user=${encoded}`
+            `${process.env.FRONTEND_URL}/oauth-success?user=${encoded}`
           );
         }
       );
@@ -425,6 +415,20 @@ app.get("/auth/github/callback", async (req, res) => {
   );
 });
 
+async function createTransporter() {
+  const transporter =
+    nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.GMAIL,
+        pass: process.env.GMAIL_PASS
+      }
+    });
+
+  return transporter;
+}
 app.post("/send-code", async (req, res) => {
 
   const transporter =
@@ -443,15 +447,21 @@ app.post("/send-code", async (req, res) => {
       text: `Code: ${code}`
     });
 
-  console.log(
-    nodemailer.getTestMessageUrl(info)
-  );
+  db.run(`
+  INSERT OR REPLACE INTO otp(email, code) VALUES (?, ?)
+`, [req.body.email, code], (err) => {
+    if (err) {
+      console.log(err.message)
+      return res.sendStatus(500).json({ status: "Failed" })
+    }
+  })
 
   res.send({
-    code: code
+    status: "Success"
   });
 });
 
-app.listen(3000, () => {
+
+app.listen(3000, "0.0.0.0", () => {
   console.log("Server is running")
 })
