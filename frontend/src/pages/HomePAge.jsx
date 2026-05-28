@@ -2,9 +2,17 @@ import { useEffect, useState } from 'react'
 
 function HomePage() {
   const [user, setUser] = useState(null)
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("uid");
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
+      method: "GET",
+      credentials: "include"
+    })
+    if (response.ok) {
+      navigate("/login");
+      return;
+    }
+    alert("Something went wrong")
   };
 
   useEffect(() => {

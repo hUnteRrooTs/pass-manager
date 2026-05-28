@@ -67,7 +67,13 @@ const set = (data) => {
   return jwt.sign(data, secureKey)
 }
 const get = (token) => {
-  return jwt.verify(token, secureKey)
+  try {
+    return jwt.verify(token, secureKey);
+  } catch (error) {
+    // Token is expired, invalid, or malformed
+    console.error("JWT Verification failed:", error.message);
+    return null;
+  }
 }
 
 app.get("/", (req, res) => {
@@ -162,15 +168,19 @@ app.post("/login", (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: false,
-        sameSite: "lax"
+        sameSite: "lax",
       })
       res.send("Logged In")
     }
   );
 })
 
-app.post("/logout", (req, res) => {
-  res.clearCookie("token")
+app.get("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  })
   res.send("Logged Out")
 })
 
@@ -247,10 +257,12 @@ const decrypt = (text, mKey) => {
   }
 }
 
-app.get("/vault/:uid", (req, res) => {
+app.get("/vault/", (req, res) => {
 
-  const uid = req.params.uid;
-
+  const token = req.cookies.token;
+  const uid = get(token).uid
+  // console.log("from /vault/")
+  // console.log(get(token).uid)
   db.all(
     `SELECT * FROM passwords WHERE uid=? ORDER BY created_at DESC`,
     [uid],

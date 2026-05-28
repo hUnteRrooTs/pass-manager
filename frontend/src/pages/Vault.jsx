@@ -35,10 +35,17 @@ export default function VaultPage() {
   const [copiedPasswordId, setCopiedPasswordId] = useState(null);
 
   const [copyTimer, setCopyTimer] = useState(0);
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("uid");
-    navigate("/login");
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
+      method: "GET",
+      credentials: "include"
+    })
+    if (response.ok) {
+      navigate("/login");
+      return;
+    }
+    alert("Something went wrong")
   };
 
   const onSubmit = async (data) => {
@@ -156,7 +163,10 @@ export default function VaultPage() {
       try {
 
         const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/vault/${user.uid}`
+          `${import.meta.env.VITE_BACKEND_URL}/vault`, {
+          method: "GET",
+          credentials: "include"
+        }
         );
 
         const data = await response.json();
