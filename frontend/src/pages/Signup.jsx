@@ -3,6 +3,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import GithubSVG from "../assets/github-svgrepo-com.svg"
 
 const signupSchema = z
   .object({
@@ -244,6 +245,27 @@ export default function SignupPage() {
               >
                 Create Secure Vault
               </button>
+
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-white/10" />
+                </div>
+
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-[#050816] px-4 text-slate-400">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-center">
+
+                <button className="py-1 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium w-full flex justify-center items-center" onClick={() => {
+                  window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/github`
+                }}>
+                  <img src={GithubSVG} alt="Github SVG" />
+                  GitHub
+                </button>
+              </div>
 
               <p className="text-center text-slate-400 mt-4">
                 Already have an account?{" "}

@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import GithubSVG from "../assets/github-svgrepo-com.svg"
 const loginSchema = z.object({
   email: z
     .string()
@@ -205,14 +206,12 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <button className="py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium">
-                Google
-              </button>
+            <div className="flex justify-center">
 
-              <button className="py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium" onClick={() => {
+              <button className="py-1 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium w-full flex justify-center items-center" onClick={() => {
                 window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/github`
               }}>
+                <img src={GithubSVG} alt="Github SVG" />
                 GitHub
               </button>
             </div>

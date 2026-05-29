@@ -162,12 +162,16 @@ app.post("/login", (req, res) => {
       if (!match) {
         return res.status(401).send("Invalid credentials");
       }
-      const token = set(row)
+      const token = set({
+        uid: row.uid,
+        fname: row.fname,
+        email: row.email
+      })
       // console.log(row)
       // console.log(token)
       res.cookie("token", token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         sameSite: "lax",
       })
       res.send("Logged In")
@@ -178,7 +182,7 @@ app.post("/login", (req, res) => {
 app.get("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "lax",
   })
   res.send("Logged Out")
@@ -258,9 +262,15 @@ const decrypt = (text, mKey) => {
 }
 
 app.get("/vault/", (req, res) => {
+  const token = req.cookies.token
+  console.log(token)
+  const data = get(token);
 
-  const token = req.cookies.token;
-  const uid = get(token).uid
+  if (!data) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  const uid = data.uid;
   // console.log("from /vault/")
   // console.log(get(token).uid)
   db.all(
