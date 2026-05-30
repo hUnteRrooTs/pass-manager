@@ -13,6 +13,7 @@ const nodemailer = require("nodemailer");
 const { send } = require("process");
 let mpassword = ""
 const secureKey = process.env.SECRETKEY_JWT
+const port = process.env.PORT || 4000
 
 app.use(express.json());
 app.use(cookieParser())
@@ -443,6 +444,7 @@ async function createTransporter() {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
+      family: 4,
       auth: {
         user: process.env.GMAIL,
         pass: process.env.GMAIL_PASS
@@ -484,6 +486,6 @@ app.post("/send-code", async (req, res) => {
 });
 
 
-app.listen(3000, "0.0.0.0", () => {
+app.listen(port, "0.0.0.0", () => {
   console.log("Server is running")
 })
