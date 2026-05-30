@@ -172,7 +172,7 @@ app.post("/login", (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "lax",
+        sameSite: "none",
       })
       res.send("Logged In")
     }
@@ -183,7 +183,7 @@ app.get("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
   })
   res.send("Logged Out")
 })
