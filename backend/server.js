@@ -453,6 +453,18 @@ async function createTransporter() {
 
   return transporter;
 }
+app.get("/test-mail", async (req, res) => {
+  try {
+    const transporter = await createTransporter();
+
+    await transporter.verify();
+
+    res.send("SMTP OK");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err.message);
+  }
+});
 app.post("/send-code", async (req, res) => {
 
   const transporter =
