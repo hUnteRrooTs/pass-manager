@@ -11,6 +11,7 @@ const session = require("express-session");
 const axios = require("axios")
 const nodemailer = require("nodemailer");
 const { send } = require("process");
+const { sendMail } = require("./gmail");
 let mpassword = ""
 const secureKey = process.env.SECRETKEY_JWT
 const port = process.env.PORT || 4000
@@ -438,51 +439,35 @@ app.get("/auth/github/callback", async (req, res) => {
   );
 });
 
-async function createTransporter() {
-  const transporter =
-    nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      family: 4,
-      auth: {
-        user: process.env.GMAIL,
-        pass: process.env.GMAIL_PASS
-      }
-    });
-
-  return transporter;
-}
-app.get("/test-mail", async (req, res) => {
-  try {
-    const transporter = await createTransporter();
-
-    await transporter.verify();
-
-    res.send("SMTP OK");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send(err.message);
-  }
-});
 app.post("/send-code", async (req, res) => {
-
-  const transporter =
-    await createTransporter();
-
   const code =
     Math.floor(
       100000 + Math.random() * 900000
     );
+  try {
 
-  const info =
-    await transporter.sendMail({
-      from: "Vaultify <vault@test.com>",
-      to: req.body.email,
-      subject: "Verification Code",
-      text: `Code: ${code}`
-    });
+    await sendMail(req.body.email, "Verify Your Vaultify Account", `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+      <h2>Welcome to Vaultify</h2>
 
+      <p>Thank you for creating a Vaultify account.</p>
+
+      <p>Your verification code is:</p>
+
+      <h1 style="letter-spacing: 4px;">${code}</h1>
+
+      <p>This code will expire in 10 minutes.</p>
+
+      <p>If you did not request this verification, you can safely ignore this email.</p>
+
+      <br>
+      <p>— Vaultify Security Team</p>
+    </div>
+  `)
+  } catch (err) {
+    console.log("FULL ERROR:");
+    console.dir(err, { depth: null });
+  }
   db.run(`
   INSERT OR REPLACE INTO otp(email, code) VALUES (?, ?)
 `, [req.body.email, code], (err) => {
