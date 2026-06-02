@@ -389,7 +389,7 @@ export default function VaultPage() {
 
                     <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all" onClick={async () => {
                       try {
-                        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/vault/${item.pid}`, { method: "DELETE" })
+                        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/vault/${item.pid}`, { method: "DELETE", credentials: "include" })
                         const text = await response.text()
                         if (!response.ok) {
                           alert(text)

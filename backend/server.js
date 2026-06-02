@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const axios = require("axios")
+const pgSession = require("connect-pg-simple")(session)
 const { sendMail } = require("./gmail");
 const pool = require("./database");
 const secureKey = process.env.SECRETKEY_JWT
@@ -20,7 +21,12 @@ app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true
 }))
+app.use("trust proxy", 1)
 app.use(session({
+  store: {
+    conString: process.env.DATABASE_URL,
+    tableName: 'session'
+  },
   secret: process.env.SECRETKEY_JWT,
   resave: false,
   saveUninitialized: false,
@@ -30,6 +36,7 @@ app.use(session({
     sameSite: "none"
   }
 }))
+
 const starter = async () => {
   try {
     console.log("Creating users")
