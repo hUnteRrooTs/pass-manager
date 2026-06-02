@@ -58,6 +58,7 @@ export default function VaultPage() {
       if (editingPassword) {
         response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/vault/${editingPassword.pid}`, {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -77,7 +78,7 @@ export default function VaultPage() {
           headers: {
             "Content-Type": "application/json",
           },
-
+          credentials: "include",
           body: JSON.stringify({
             uid: user.uid,
             website: data.website,

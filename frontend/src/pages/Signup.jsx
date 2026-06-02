@@ -55,7 +55,7 @@ export default function SignupPage() {
         }
       );
 
-      const text = await response.text();
+      const text = await response.json();
 
       if (!response.ok) {
         return alert(text);
@@ -95,7 +95,7 @@ export default function SignupPage() {
         return alert(text); // ❌ OTP / error
       }
 
-      alert(text); // ✅ success
+      alert("Account Created Successfully"); // ✅ success
       navigate("/login");
     } catch (err) {
       console.log(err);
