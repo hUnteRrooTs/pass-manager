@@ -23,10 +23,10 @@ app.use(cors({
 }))
 app.set("trust proxy", 1)
 app.use(session({
-  store: {
+  store: new pgSession({
     conString: process.env.DATABASE_URL,
     tableName: 'session'
-  },
+  }),
   secret: process.env.SECRETKEY_JWT,
   resave: false,
   saveUninitialized: false,
