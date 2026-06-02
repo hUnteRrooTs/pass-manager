@@ -79,6 +79,9 @@ const get = (token) => {
 }
 
 app.get("/", (req, res) => {
+  console.log(process.env.GMAIL_CLIENT_ID);
+  console.log(process.env.GMAIL_CLIENT_SECRET?.length);
+  console.log(process.env.GMAIL_REFRESH_TOKEN?.length);
   res.send("Where are are")
 })
 
