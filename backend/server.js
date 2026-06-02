@@ -21,7 +21,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true
 }))
-app.use("trust proxy", 1)
+app.set("trust proxy", 1)
 app.use(session({
   store: {
     conString: process.env.DATABASE_URL,
