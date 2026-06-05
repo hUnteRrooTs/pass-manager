@@ -344,6 +344,7 @@ app.get("/auth/github/callback", async (req, res) => {
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "User-Agent": "Pass-Manager-Vaultify"
         },
       }
     );
