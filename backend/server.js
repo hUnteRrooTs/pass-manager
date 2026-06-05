@@ -378,10 +378,11 @@ app.get("/auth/github/callback", async (req, res) => {
     if (row.rows) {
 
       const user = {
-        uid: row.uid,
-        fname: row.fname,
-        email: row.email
+        uid: row.rows.uid,
+        fname: row.rows.fname,
+        email: row.rows.email
       };
+      console.log(user)
 
       const encoded =
         encodeURIComponent(
