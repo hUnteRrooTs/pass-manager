@@ -375,7 +375,7 @@ app.get("/auth/github/callback", async (req, res) => {
       `SELECT * FROM users WHERE email=$1`,
       [primaryEmail.email])
     // USER ALREADY EXISTS
-    if (row) {
+    if (row.rows) {
 
       const user = {
         uid: row.uid,
