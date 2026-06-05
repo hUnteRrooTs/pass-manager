@@ -198,25 +198,8 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-white/10" />
               </div>
-
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-[#050816] px-4 text-slate-400">
-                  Or continue with
-                </span>
-              </div>
             </div>
-
-            <div className="flex justify-center">
-
-              <button className="py-1 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-medium w-full flex justify-center items-center" onClick={() => {
-                window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/github`
-              }}>
-                <img src={GithubSVG} alt="Github SVG" />
-                GitHub
-              </button>
-            </div>
-
-            <p className="mt-8 text-center text-slate-400">
+            <p className="mt-8 text-center text-slate-400 py-4">
               Don't have an account?{" "}
 
               <a
