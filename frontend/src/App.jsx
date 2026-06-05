@@ -5,7 +5,6 @@ import SignupPage from './pages/Signup'
 import LoginPage from './pages/Login'
 import VaultPage from './pages/Vault'
 import DemoPage from './pages/Demo'
-import OAuthSuccess from './pages/Oauth-success'
 
 export default function App() {
   return (
@@ -15,7 +14,6 @@ export default function App() {
       <Route path='/signup' element={<SignupPage />} />
       <Route path='/vault' element={<VaultPage />} />
       <Route path='/demo' element={<DemoPage />} />
-      <Route path='/oauth-success' element={<OAuthSuccess />} />
     </Routes>
   )
 }
