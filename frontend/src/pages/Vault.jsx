@@ -307,10 +307,16 @@ export default function VaultPage() {
                   className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-white/[0.03] transition-all"
                 >
 
-                  <div>
-                    <h4 className="text-xl font-semibold">
-                      {item.website}
-                    </h4>
+                  <div className="w-96">
+                    <div className="flex w-full justify-between items-stretch">
+                      <h4 className="text-xl font-semibold">
+                        {item.website}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Created At:
+                        <span className="text-lg text-gray-300 ml-2 font-bold">{new Date(new Date(item.created_at).getTime() + 5.5 * 60 * 60 * 1000).toLocaleString('en-IN', { hour12: true })}</span>
+                      </p>
+                    </div>
 
                     <p className="text-slate-400">
                       {item.username}

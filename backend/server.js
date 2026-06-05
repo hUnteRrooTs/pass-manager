@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express")
 const cors = require("cors")
-const sqlite3 = require("sqlite3").verbose()
 const app = express()
 const bcrypt = require("bcrypt");
 const crypto = require("crypto")
@@ -32,14 +31,13 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: true,
-    sameSite: "none"
+    secure: process.env.DEVELOPMENT == "local" ? false : true,
+    sameSite: process.env.DEVELOPMENT == "local" ? "lax" : "none"
   }
 }))
 
 const starter = async () => {
   try {
-    console.log("Creating users")
     await pool.query(`
 CREATE TABLE IF NOT EXISTS users(
 uid SERIAL PRIMARY KEY,
@@ -49,8 +47,6 @@ email VARCHAR(255) UNIQUE,
 provider VARCHAR(20) CHECK(provider IN ('local', 'github'))
 );
 `)
-    console.log("users created")
-    console.log("Creating passwords")
     await pool.query(`
 CREATE TABLE IF NOT EXISTS passwords (
 pid SERIAL PRIMARY KEY,
@@ -61,9 +57,6 @@ password TEXT,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `)
-
-    console.log("passwords created")
-    console.log("Creating otp")
     await pool.query(`
 CREATE TABLE IF NOT EXISTS otp(
 email VARCHAR(255) PRIMARY KEY,
@@ -71,12 +64,6 @@ code CHAR(6) NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `)
-    console.log("otp created")
-    const result = await pool.query(
-      "SELECT current_user, current_database()"
-    );
-    console.log(result.rows[0]);
-
   }
   catch (err) {
     console.log(err)
@@ -179,8 +166,8 @@ app.post("/login", async (req, res) => {
     // // console.log(token)
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: process.env.DEVELOPMENT == "local" ? false : true,
+      sameSite: process.env.DEVELOPMENT == "local" ? "lax" : "none"
     })
     req.session.mpassword = info.password
     console.log("MasterKEy /Login: ", req.session.mpassword)
@@ -196,8 +183,8 @@ app.post("/login", async (req, res) => {
 app.get("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.DEVELOPMENT == "local" ? false : true,
+    sameSite: process.env.DEVELOPMENT == "local" ? "lax" : "none"
   })
   res.send("Logged Out")
 })
@@ -286,6 +273,7 @@ app.get("/vault/", async (req, res) => {
     [uid])
 
   let datas = result.rows;
+  console.log("MPassword:", mpassword)
   for (let i = 0; i < datas.length; i++) {
     datas[i].password = decrypt(datas[i].password, mpassword)
   }
