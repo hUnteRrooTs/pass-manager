@@ -386,6 +386,12 @@ app.get("/auth/github/callback", async (req, res) => {
           JSON.stringify(user)
         );
 
+      res.cookie("token", token, {
+        httpOnly: true,     // Prevents client-side JS from reading the cookie (XSS protection)
+        secure: true, // True in production (requires HTTPS)
+        sameSite: "none",    // Protects against CSRF
+      });
+
       return res.redirect(
         `${process.env.FRONTEND_URL}/oauth-success?user=${encoded}`
       );

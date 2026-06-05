@@ -17,6 +17,7 @@ export default function OAuthSuccess() {
 
     console.log(userString);
 
+
     if (!userString) {
       return;
     }
