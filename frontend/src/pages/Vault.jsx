@@ -55,6 +55,7 @@ export default function VaultPage() {
 
       const user = JSON.parse(localStorage.getItem("user"));
       let response
+      const date = new Date(ata.expiry_at).toISOString()
 
       if (editingPassword) {
         response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/vault/${editingPassword.pid}`, {
@@ -69,7 +70,7 @@ export default function VaultPage() {
             website: data.website,
             username: data.username,
             password: data.password,
-            expiry_at: data.expiry_at
+            expiry_at: date
           }),
         })
       }
@@ -86,7 +87,7 @@ export default function VaultPage() {
             website: data.website,
             username: data.username,
             password: data.password,
-            expiry_at: data.expiry_at
+            expiry_at: date
           }),
         });
 
