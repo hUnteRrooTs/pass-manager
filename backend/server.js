@@ -54,6 +54,7 @@ uid INTEGER REFERENCES users(uid) ON DELETE CASCADE,
 website TEXT,
 username TEXT,
 password TEXT,
+expiry_at TIMESTAMP, 
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `)
@@ -213,21 +214,38 @@ app.post("/vault", async (req, res) => {
     website: req.body.website,
     username: req.body.username,
     password: req.body.password,
+    expiry_at: req.body.expiry_at
   };
   const mpassword = req.session.mpassword
   console.log(`MAsterkey: ${req.session}`)
   let epass = encrypt(info.password, mpassword)
-  await pool.query(
-    `INSERT INTO passwords (uid, website, username, password)
+  console.log(info)
+  if (typeof info.expiry_at === 'undefined') {
+    await pool.query(
+      `INSERT INTO passwords (uid, website, username, password)
      VALUES ($1, $2, $3, $4)`,
 
-    [
-      info.uid,
-      info.website,
-      info.username,
-      epass
-    ])
-  res.send("Saved");
+      [
+        info.uid,
+        info.website,
+        info.username,
+        epass,
+      ])
+    res.send("Saved")
+  } else {
+    await pool.query(
+      `INSERT INTO passwords (uid, website, username, password,expiry_at)
+     VALUES ($1, $2, $3, $4, $5)`,
+
+      [
+        info.uid,
+        info.website,
+        info.username,
+        epass,
+        info.expiry_at
+      ])
+    res.send("Saved");
+  }
 
 });
 
@@ -286,7 +304,7 @@ app.put("/vault/:pid", async (req, res) => {
   const info = req.body
   const mpassword = req.session.mpassword
   const password = encrypt(info.password, mpassword)
-  await pool.query(`UPDATE passwords SET website=$1, username=$2, password=$3 WHERE pid=$4`, [info.website, info.username, password, pid])
+  await pool.query(`UPDATE passwords SET website=$1, username=$2, password=$3, expiry_at=$4 WHERE pid=$5`, [info.website, info.username, password, info.expiry_at, pid])
   res.send("Updated")
 })
 

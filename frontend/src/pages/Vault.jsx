@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import ExpiryTimer from "./Expirytimer";
 export default function VaultPage() {
 
   const navigate = useNavigate();
@@ -68,6 +69,7 @@ export default function VaultPage() {
             website: data.website,
             username: data.username,
             password: data.password,
+            expiry_at: data.expiry_at
           }),
         })
       }
@@ -84,6 +86,7 @@ export default function VaultPage() {
             website: data.website,
             username: data.username,
             password: data.password,
+            expiry_at: data.expiry_at
           }),
         });
 
@@ -171,6 +174,7 @@ export default function VaultPage() {
         );
 
         const data = await response.json();
+        console.log(data)
 
         setPasswords(data);
 
@@ -314,7 +318,7 @@ export default function VaultPage() {
                       </h4>
                       <p className="text-sm text-gray-500">
                         Created At:
-                        <span className="text-lg text-gray-300 ml-2 font-bold">{new Date(new Date(item.created_at).getTime() + 5.5 * 60 * 60 * 1000).toLocaleString('en-IN', { hour12: true })}</span>
+                        <span className="text-lg text-gray-300 ml-2 font-bold">{new Date(new Date(item.created_at).getTime()).toLocaleString('en-IN', { hour12: true })}</span>
                       </p>
                     </div>
 
@@ -322,12 +326,13 @@ export default function VaultPage() {
                       {item.username}
                     </p>
 
-
                     <p className="mt-2 text-cyan-400 font-mono">
                       {visiblePasswordId === item.pid
                         ? item.password
                         : "••••••••••"}
                     </p>
+                    <ExpiryTimer expiry_at={item.expiry_at} />
+                    {/* <p>{item.expiry_at}</p> */}
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -490,6 +495,15 @@ export default function VaultPage() {
                   </p>
                 )}
               </div>
+              <div>
+                <label className="text-sm text-slate-300 mb-2 block">Expiry Date</label>
+                <input
+                  type="datetime-local"
+                  placeholder="Expiry Date"
+                  {...register("expiry_at")}
+                  className="w-full px-5 py-4 rounded-2xl bg-black/30 border-none outline-none transition-all placeholder:text-slate-500"
+                />
+              </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -552,7 +566,6 @@ export default function VaultPage() {
                     {errors.password.message}
                   </p>
                 )}
-
                 <div className="mt-5 p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
 
                   <div>
