@@ -174,9 +174,9 @@ export default function VaultPage() {
         );
 
         const data = await response.json();
-        console.log(data)
 
         setPasswords(data);
+        console.log("All the passwords regained")
 
       } catch (err) {
 
@@ -287,7 +287,13 @@ export default function VaultPage() {
             </div>
 
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setShowModal(true)
+                setValue("username", "")
+                setValue("password", "")
+                setValue("website", "")
+
+              }}
               className="px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold hover:scale-[1.02] transition-transform"
             >
               + Add Password
@@ -331,7 +337,7 @@ export default function VaultPage() {
                         ? item.password
                         : "••••••••••"}
                     </p>
-                    <ExpiryTimer expiry_at={item.expiry_at} />
+                    <ExpiryTimer expiry_at={item.expiry_at} pid={item.pid} />
                     {/* <p>{item.expiry_at}</p> */}
                   </div>
 
@@ -393,6 +399,7 @@ export default function VaultPage() {
                       setValue("username", item.username)
                       setValue("password", item.password)
                       setValue("website", item.website)
+                      setValue("expiry_at", item.expiry_at)
                       setEditingPassword(item)
                     }}>
                       Edit
@@ -500,6 +507,7 @@ export default function VaultPage() {
                 <input
                   type="datetime-local"
                   placeholder="Expiry Date"
+                  min={new Date(new Date().getTime() - new Date)}
                   {...register("expiry_at")}
                   className="w-full px-5 py-4 rounded-2xl bg-black/30 border-none outline-none transition-all placeholder:text-slate-500"
                 />

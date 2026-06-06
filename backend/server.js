@@ -54,7 +54,7 @@ uid INTEGER REFERENCES users(uid) ON DELETE CASCADE,
 website TEXT,
 username TEXT,
 password TEXT,
-expiry_at TIMESTAMP, 
+expiry_at TIMESTAMPZ, 
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `)
@@ -278,7 +278,6 @@ app.get("/vault/", async (req, res) => {
   const mpassword = req.session.mpassword
   const data = get(token);
 
-  console.log(`MAsterkey /vault: ${req.session.mpassword}`)
   if (!data) {
     return res.status(401).send("Unauthorized");
   }
@@ -291,11 +290,9 @@ app.get("/vault/", async (req, res) => {
     [uid])
 
   let datas = result.rows;
-  console.log("MPassword:", mpassword)
   for (let i = 0; i < datas.length; i++) {
     datas[i].password = decrypt(datas[i].password, mpassword)
   }
-  console.log(datas)
   res.send(datas);
 });
 
