@@ -159,6 +159,10 @@ export default function VaultPage() {
   }
 
   useEffect(() => {
+    // const token = fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, { method: "GET", credentials: "include" })
+    // if (token.status == 401) {
+    //   localStorage.clear()
+    // }
     if (!JSON.parse(localStorage.getItem("user"))) {
       navigate("/login")
     }
@@ -175,9 +179,14 @@ export default function VaultPage() {
         );
 
         const data = await response.json();
-
-        setPasswords(data);
-        console.log("All the passwords regained")
+        console.log(`The status is ${response.status}`)
+        if (response.status === 401) {
+          localStorage.clear()
+          navigate("/login")
+        } else {
+          setPasswords(data);
+          console.log("All the passwords regained")
+        }
 
       } catch (err) {
 
@@ -201,7 +210,7 @@ export default function VaultPage() {
       <header className="relative z-10 border-b border-white/10 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
 
-          <div className="flex items-center gap-3">
+          <a className="flex items-center gap-3" href="/">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold text-lg">
               🔒
             </div>
@@ -209,7 +218,7 @@ export default function VaultPage() {
             <h1 className="text-2xl font-bold">
               Vaultify
             </h1>
-          </div>
+          </a>
 
           <button
             onClick={logout}

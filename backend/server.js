@@ -279,12 +279,14 @@ app.get("/vault/", async (req, res) => {
   const data = get(token);
 
   if (!data) {
-    return res.status(401).send("Unauthorized");
+    res.status(401).send("Unauthorized");
+    return
   }
 
   const uid = data.uid;
   // console.log("from /vault/")
   // console.log(get(token).uid)
+  if (uid == undefined) res.redirect("/logout")
   const result = await pool.query(
     `SELECT * FROM passwords WHERE uid=$1 ORDER BY created_at DESC`,
     [uid])
@@ -363,6 +365,14 @@ created_at = CURRENT_TIMESTAMP
   }
 });
 
+app.get("/auth/me", (req, res) => {
+  const token = req.cookies.token
+  if (token == undefined) {
+    res.status(401)
+  } else {
+    res.send("Its okay")
+  }
+})
 
 app.listen(port, "0.0.0.0", () => {
   console.log("Server is running")
