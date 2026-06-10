@@ -1,33 +1,53 @@
-import { useEffect, useRef, useState } from "react";
-import { animate } from "animejs";
+import { useEffect, useState } from "react";
 
-const services = [
+const words = [
   "Instagram",
   "Facebook",
   "GitHub",
   "Netflix",
   "Google",
+  "Anything"
 ];
 
-export default function HeroText() {
-  const [index, setIndex] = useState(0);
-  const textRef = useRef(null);
+export default function Typewriter() {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [text, setText] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      animate({
+    const currentWord = words[wordIndex];
 
-      })
-    }, 2000);
+    const timeout = setTimeout(() => {
+      if (!deleting) {
+        setText(currentWord.slice(0, text.length + 1));
 
-    return () => clearInterval(interval);
-  }, []);
+        if (text.length + 1 === currentWord.length) {
+          setTimeout(() => setDeleting(true), 1000);
+        }
+      } else {
+        setText(currentWord.slice(0, text.length - 1));
+
+        if (text.length === 1) {
+          setDeleting(false);
+          setWordIndex((prev) => (prev + 1) % words.length);
+        }
+      }
+    }, deleting ? 50 : 100);
+
+    return () => clearTimeout(timeout);
+  }, [text, deleting, wordIndex]);
 
   return (
-    <h1 className="text-5xl font-bold text-white">
-      Store Passwords for{" "}
-      <span ref={textRef} className="text-cyan-400 inline-block">
-        {services[index]}
+    <h1 className="text-7xl font-bold text-foreground flex flex-col w-fit  h-fit">
+      <span>
+        Store Passwords {" "}
+      </span>
+      <span className="flex justify-start">
+        of {" "}
+        <span className="bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent ml-4 h-full">
+          {text}
+          <span className="animate-pulse">|</span>
+        </span>
       </span>
     </h1>
   );
