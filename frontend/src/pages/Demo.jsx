@@ -1,5 +1,18 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import {
+  Sun,
+  Moon
+} from "lucide-react";
+import { useState, useEffect } from "react";
+import LockSVG from "../assets/lock-svgrepo-com.svg"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function DemoPage() {
 
@@ -31,204 +44,568 @@ export default function DemoPage() {
     },
   ];
 
+  const [darkMode, setDarkMode] = useState(true);
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    console.log("darkMode:", darkMode);
+
+    localStorage.setItem(
+      "theme",
+      darkMode ? "dark" : "light"
+    );
+  }, [darkMode])
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+          radial-gradient(circle at 50% 50%, 
+            rgba(203, 213, 225, 0.12) 0%, 
+            rgba(203, 213, 225, 0.07) 25%, 
+            rgba(203, 213, 225, 0.03) 35%, 
+            transparent 50%
+          )
+        `,
+          backgroundSize: "100% 100%",
+        }}
+      />
 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-120px] left-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
 
-        <div className="absolute bottom-[-150px] right-[-100px] w-[350px] h-[350px] bg-purple-500/20 blur-3xl rounded-full" />
-      </div>
+      <header className="sticky top-0 z-50">
+        <div
+          className="
+    max-w-7xl
+    mx-auto
+    px-6
+    py-4
+    flex
+    items-center
+    justify-between
 
-      <header className="relative z-10 border-b border-white/10 backdrop-blur-xl">
+    rounded-2xl
+    mt-0
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
-
+    bg-white/5
+    backdrop-blur-xl
+    border
+    border-white/10
+    "
+        >
+          {/* Logo */}
           <div className="flex items-center gap-3">
-
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold text-lg">
-              🔒
+            <div
+              className="
+        p-2
+        rounded-xl
+        bg-gradient-to-r
+        from-cyan-500
+        to-fuchsia-500
+        shadow-[0_0_20px_rgba(34,211,238,0.3)]
+        "
+            >
+              <img
+                src={LockSVG}
+                alt="Vaultify"
+                className="w-6 h-6"
+              />
             </div>
 
-            <h1 className="text-2xl font-bold">
-              Vaultify Demo
-            </h1>
+            <span
+              className="
+        text-xl
+        font-bold
+        bg-gradient-to-r
+        from-cyan-400
+        to-fuchsia-500
+        bg-clip-text
+        text-transparent
+        "
+            >
+              Vaultify
+            </span>
           </div>
 
-          <button
-            onClick={() => navigate("/signup")}
-            className="px-5 py-2 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold hover:scale-105 transition-transform"
-          >
-            Start Free
-          </button>
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
+            <a
+              href="#security"
+              className="
+  relative
+  text-muted-foreground
+  hover:text-cyan-400
+  transition-colors
+
+  after:absolute
+  after:left-0
+  after:-bottom-1
+  after:h-[2px]
+  after:w-0
+  after:bg-cyan-400
+  hover:after:w-full
+  after:transition-all
+  "
+            >
+              Security
+            </a>
+
+            <a
+              href="#features"
+              className="
+  relative
+  text-muted-foreground
+  hover:text-cyan-400
+  transition-colors
+
+  after:absolute
+  after:left-0
+  after:-bottom-1
+  after:h-[2px]
+  after:w-0
+  after:bg-cyan-400
+  hover:after:w-full
+  after:transition-all
+  "
+            >
+              Features
+            </a>
+
+            <a
+              href="/vault"
+              className="
+  relative
+  text-muted-foreground
+  hover:text-cyan-400
+  transition-colors
+
+  after:absolute
+  after:left-0
+  after:-bottom-1
+  after:h-[2px]
+  after:w-0
+  after:bg-cyan-400
+  hover:after:w-full
+  after:transition-all
+  "
+            >
+              Vault
+            </a>
+          </nav>
+
+          {/* Actions */}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setDarkMode(!darkMode)}
+              className="
+                text-cyan-400
+                hover:text-fuchsia-500
+                hover:bg-white/10
+                transition-all
+                "
+              onClick={() => { setDarkMode(prev => !prev) }}
+            >
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
+            <Button
+              variant="outline"
+              className="
+        border-cyan-500/40
+        text-cyan-400
+        bg-transparent
+        hover:bg-cyan-500/10
+        "
+              asChild
+            ><a href='/login'>
+                Login
+              </a>
+            </Button>
+
+            <Button
+              className="
+        bg-gradient-to-r
+        from-cyan-500
+        to-fuchsia-500
+        text-foreground
+        hover:scale-105
+        transition-all
+        shadow-[0_0_25px_rgba(34,211,238,0.25)]
+        "
+              asChild
+            ><a href='/signup'>
+                Start Free
+              </a>
+            </Button>
+          </div>
         </div>
       </header>
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
 
-        <div className="mb-12">
+        {/* Hero */}
 
-          <p className="inline-flex px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-300 text-sm">
-            Interactive Demo Vault
+        <div className="mb-12 text-center">
+
+          <p
+            className="
+      inline-flex
+      px-4
+      py-2
+      rounded-full
+      bg-cyan-500/10
+      border
+      border-cyan-500/20
+      text-cyan-400
+      text-sm
+      backdrop-blur-md
+      "
+          >
+            ✨ Interactive Demo Vault
           </p>
 
-          <h2 className="mt-6 text-5xl font-bold leading-tight">
+          <h2 className="mt-6 text-5xl md:text-6xl font-bold leading-tight">
             Experience
 
-            <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+            <span
+              className="
+block
+bg-gradient-to-r
+from-cyan-400
+via-fuchsia-400
+to-pink-500
+bg-clip-text
+text-transparent
+        "
+            >
               Vaultify
             </span>
           </h2>
 
-          <p className="mt-4 text-slate-400 text-lg max-w-2xl">
-            Explore how Vaultify securely stores and manages your passwords with encryption and modern security features.
+          <p className="mt-4 text-muted-foreground text-lg max-w-2xl mx-auto">
+            Explore how Vaultify securely stores and manages your passwords
+            with encryption and modern security features.
           </p>
+
         </div>
+
+        {/* Stats */}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
 
-          <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
-            <p className="text-slate-400 text-sm">
-              Total Passwords
-            </p>
+          <Card className="group relative overflow-hidden">
+            <div
+              className="
+    absolute inset-0
+    bg-gradient-to-r
+    from-cyan-500/10
+    to-fuchsia-500/10
+    opacity-0
+    group-hover:opacity-100
+    transition-all
+    "
+            />
+            <CardContent className="p-6">
+              <p className="text-muted-foreground text-sm">
+                Total Passwords
+              </p>
 
-            <h3 className="mt-3 text-4xl font-bold">
-              3
-            </h3>
-          </div>
+              <h3 className="mt-3 text-4xl font-bold">
+                3
+              </h3>
+            </CardContent>
+          </Card>
 
-          <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
-            <p className="text-slate-400 text-sm">
-              Encryption
-            </p>
+          <Card className="group relative overflow-hidden">
+            <div
+              className="
+    absolute inset-0
+    bg-gradient-to-r
+    from-cyan-500/10
+    to-fuchsia-500/10
+    opacity-0
+    group-hover:opacity-100
+    transition-all
+    "
+            />
+            <CardContent className="p-6">
+              <p className="text-muted-foreground text-sm">
+                Encryption
+              </p>
 
-            <h3 className="mt-3 text-4xl font-bold text-cyan-400">
-              AES
-            </h3>
-          </div>
+              <h3
+                className="
+          mt-3
+          text-4xl
+          font-bold
+          bg-gradient-to-r
+          from-cyan-400
+          to-fuchsia-500
+          bg-clip-text
+          text-transparent
+          "
+              >
+                AES
+              </h3>
+            </CardContent>
+          </Card>
 
-          <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
-            <p className="text-slate-400 text-sm">
-              Security Score
-            </p>
+          <Card className="group relative overflow-hidden">
+            <div
+              className="
+    absolute inset-0
+    bg-gradient-to-r
+    from-cyan-500/10
+    to-fuchsia-500/10
+    opacity-0
+    group-hover:opacity-100
+    transition-all
+    "
+            />
+            <CardContent className="p-6">
+              <p className="text-muted-foreground text-sm">
+                Security Score
+              </p>
 
-            <h3 className="mt-3 text-4xl font-bold text-green-400">
-              92%
-            </h3>
-          </div>
+              <h3 className="mt-3 text-4xl font-bold text-cyan-400">
+                92%
+              </h3>
+            </CardContent>
+          </Card>
 
-          <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
-            <p className="text-slate-400 text-sm">
-              Clipboard Timer
-            </p>
+          <Card className="group relative overflow-hidden">
+            <div
+              className="
+    absolute inset-0
+    bg-gradient-to-r
+    from-cyan-500/10
+    to-fuchsia-500/10
+    opacity-0
+    group-hover:opacity-100
+    transition-all
+    "
+            />
+            <CardContent className="p-6">
+              <p className="text-muted-foreground text-sm">
+                Clipboard Timer
+              </p>
 
-            <h3 className="mt-3 text-4xl font-bold">
-              30s
-            </h3>
-          </div>
+              <h3 className="mt-3 text-4xl font-bold">
+                30s
+              </h3>
+            </CardContent>
+          </Card>
+
         </div>
 
-        <div className="rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-2xl overflow-hidden">
+        {/* Vault */}
 
-          <div className="p-6 border-b border-white/10 flex items-center justify-between">
+        <div className="relative">
 
-            <div>
-              <h3 className="text-2xl font-bold">
-                Demo Password Vault
-              </h3>
-
-              <p className="text-slate-400 mt-1">
-                Sample encrypted credentials
-              </p>
-            </div>
-
-            <button
-              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold"
-            >
-              + Add Password
-            </button>
+          <div className="absolute inset-0 flex justify-center pointer-events-none">
+            <div className="w-[500px] h-[500px] bg-gradient-to-r from-cyan-500/10 to-fuchsia-500/10 blur-3xl rounded-full" />
           </div>
 
-          <div className="divide-y divide-white/10">
+          <Card
+            className="
+ relative
+  overflow-hidden
+  border-border
+  bg-card
+  transition-all
+  duration-300
+  hover:-translate-y-1
+  hover:border-cyan-500/30
+      "
+          >
+            <CardHeader className="border-b border-border">
 
-            {demoPasswords.map((item) => (
-
-              <div
-                key={item.pid}
-                className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-white/[0.03] transition-all"
-              >
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
                 <div>
+                  <CardTitle className="text-2xl">
+                    Demo Password Vault
+                  </CardTitle>
 
-                  <h4 className="text-xl font-semibold">
-                    {item.website}
-                  </h4>
-
-                  <p className="text-slate-400">
-                    {item.username}
-                  </p>
-
-                  <p className="mt-2 text-cyan-400 font-mono">
-                    {visiblePasswordId === item.pid
-                      ? item.password
-                      : "••••••••••••"}
-                  </p>
+                  <CardDescription>
+                    Sample encrypted credentials
+                  </CardDescription>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <Button
+                  className="
+            bg-gradient-to-r
+            from-cyan-500
+            to-fuchsia-500
+            text-white
+            hover:opacity-90
+            shadow-[0_0_20px_rgba(34,211,238,0.25)]
+            "
+                >
+                  + Add Password
+                </Button>
 
-                  <button
-                    onClick={() => {
-
-                      if (visiblePasswordId === item.pid) {
-                        setVisiblePasswordId(null);
-                      }
-
-                      else {
-                        setVisiblePasswordId(item.pid);
-                      }
-                    }}
-                    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
-                  >
-                    {visiblePasswordId === item.pid
-                      ? "Hide"
-                      : "View"}
-                  </button>
-
-                  <button className="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/20 transition-all">
-                    Copy
-                  </button>
-
-                  <button className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                    Edit
-                  </button>
-
-                  <button className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all">
-                    Delete
-                  </button>
-                </div>
               </div>
-            ))}
-          </div>
+
+            </CardHeader>
+
+            <CardContent className="p-0">
+
+              {demoPasswords.map((item) => (
+
+                <div
+                  key={item.pid}
+                  className="
+            p-6
+            flex
+            flex-col
+            lg:flex-row
+            lg:items-center
+            lg:justify-between
+            gap-4
+            border-b
+            border-border
+            hover:bg-gradient-to-r
+            hover:from-cyan-500/5
+            hover:to-fuchsia-500/5
+            transition-all
+            "
+                >
+
+                  <div>
+
+                    <h4 className="text-xl font-semibold">
+                      {item.website}
+                    </h4>
+
+                    <p className="text-muted-foreground">
+                      {item.username}
+                    </p>
+
+                    <p
+                      className="
+                mt-2
+                font-mono
+                bg-gradient-to-r
+                from-cyan-400
+                to-fuchsia-500
+                bg-clip-text
+                text-transparent
+                "
+                    >
+                      {visiblePasswordId === item.pid
+                        ? item.password
+                        : "••••••••••••"}
+                    </p>
+
+                  </div>
+
+                  <div className="flex flex-wrap gap-3">
+
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (visiblePasswordId === item.pid) {
+                          setVisiblePasswordId(null);
+                        } else {
+                          setVisiblePasswordId(item.pid);
+                        }
+                      }}
+                      className="
+                hover:border-cyan-400
+                hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]
+                "
+                    >
+                      {visiblePasswordId === item.pid
+                        ? "Hide"
+                        : "View"}
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="
+                border-cyan-500/20
+                text-cyan-400
+                bg-cyan-500/10
+                hover:bg-cyan-500/20
+                "
+                    >
+                      Copy
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="
+                hover:border-fuchsia-400
+                hover:shadow-[0_0_15px_rgba(217,70,239,0.2)]
+                "
+                    >
+                      Edit
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="
+                border-red-500/20
+                text-red-400
+                bg-red-500/10
+                hover:bg-red-500/20
+                "
+                    >
+                      Delete
+                    </Button>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </CardContent>
+
+          </Card>
+
         </div>
 
-        <div className="mt-12 text-center">
+        {/* CTA */}
 
-          <h3 className="text-4xl font-bold">
+        <div className="mt-16 text-center">
+
+          <h3 className="text-4xl md:text-5xl font-bold">
             Ready to secure your passwords?
           </h3>
 
-          <p className="mt-4 text-slate-400 text-lg">
+          <p className="mt-4 text-muted-foreground text-lg">
             Create your own encrypted vault in seconds.
           </p>
 
-          <button
+          <Button
             onClick={() => navigate("/signup")}
-            className="mt-6 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold text-lg hover:scale-105 transition-transform shadow-xl shadow-cyan-500/30"
+            size="lg"
+            className="
+      mt-6
+      px-8
+      py-6
+      text-lg
+      bg-gradient-to-r
+      from-cyan-500
+      to-fuchsia-500
+      text-white
+      shadow-[0_0_30px_rgba(34,211,238,0.3)]
+      hover:shadow-[0_0_40px_rgba(217,70,239,0.4)]
+      hover:scale-105
+      transition-all
+      "
           >
             Create Free Account
-          </button>
+          </Button>
+
         </div>
+
       </main>
     </div>
   );

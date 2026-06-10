@@ -3,6 +3,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input"
 import GithubSVG from "../assets/github-svgrepo-com.svg"
 
 const signupSchema = z
@@ -107,48 +108,248 @@ export default function SignupPage() {
     <div className="min-h-screen bg-black text-white relative overflow-hidden flex items-center justify-center px-4 py-10">
 
       {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-120px] left-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
-        <div className="absolute bottom-[-150px] right-[-100px] w-[350px] h-[350px] bg-purple-500/20 blur-3xl rounded-full" />
-      </div>
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+          radial-gradient(circle at 50% 50%, 
+            rgba(203, 213, 225, 0.12) 0%, 
+            rgba(203, 213, 225, 0.07) 25%, 
+            rgba(203, 213, 225, 0.03) 35%, 
+            transparent 50%
+          )
+        `,
+          backgroundSize: "100% 100%",
+        }}
+      />
 
       <div className="relative z-10 w-full max-w-6xl grid lg:grid-cols-2 rounded-[32px] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl shadow-cyan-500/10">
 
         {/* LEFT PANEL */}
-        <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border-r border-white/10">
-          <div>
+        <div
+          className="
+  hidden lg:flex
+  flex-col
+  justify-between
+  p-12
+
+  bg-gradient-to-br
+  from-cyan-500/10
+  via-transparent
+  to-fuchsia-500/10
+
+  border-r
+  border-border
+
+  relative
+  overflow-hidden
+"
+        >
+          {/* Background Glow */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div
+              className="
+      absolute
+      top-10
+      left-10
+      w-72
+      h-72
+      bg-cyan-500/10
+      blur-3xl
+      rounded-full
+    "
+            />
+
+            <div
+              className="
+      absolute
+      bottom-10
+      right-10
+      w-72
+      h-72
+      bg-fuchsia-500/10
+      blur-3xl
+      rounded-full
+    "
+            />
+          </div>
+
+          <div className="relative z-10">
             <div className="flex items-center gap-3 mb-10">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold text-xl">
+              <div
+                className="
+        p-3
+        rounded-2xl
+        bg-gradient-to-r
+        from-cyan-500
+        to-fuchsia-500
+
+        shadow-[0_0_25px_rgba(34,211,238,0.25)]
+      "
+              >
                 🔒
               </div>
-              <h1 className="text-3xl font-bold">Vaultify</h1>
+
+              <h1
+                className="
+        text-3xl
+        font-extrabold
+
+        bg-gradient-to-r
+        from-cyan-400
+        to-fuchsia-500
+
+        bg-clip-text
+        text-transparent
+      "
+              >
+                Vaultify
+              </h1>
             </div>
 
-            <p className="inline-flex px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-300 text-sm mb-6">
-              Trusted by 50,000+ users
-            </p>
+            <div
+              className="
+      inline-flex
+      items-center
+      gap-2
 
-            <h2 className="text-5xl font-bold leading-tight">
+      px-4
+      py-2
+
+      rounded-full
+
+      bg-cyan-500/10
+      border
+      border-cyan-500/20
+
+      backdrop-blur-xl
+
+      text-cyan-300
+      text-sm
+      font-medium
+
+      mb-6
+    "
+            >
+              ✨ Trusted by 50,000+ users
+            </div>
+
+            <h2
+              className="
+      text-5xl
+      font-extrabold
+      leading-tight
+      tracking-tight
+    "
+            >
               Secure Your
-              <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+
+              <span
+                className="
+        block
+
+        bg-gradient-to-r
+        from-cyan-400
+        via-sky-400
+        to-fuchsia-500
+
+        bg-clip-text
+        text-transparent
+
+        drop-shadow-[0_0_25px_rgba(34,211,238,0.25)]
+      "
+              >
                 Digital Life
               </span>
             </h2>
 
-            <p className="mt-6 text-slate-300 text-lg max-w-md">
-              Store passwords, notes, cards, and everything important securely.
+            <p
+              className="
+      mt-6
+      max-w-md
+
+      text-muted-foreground
+      text-lg
+      leading-relaxed
+    "
+            >
+              Store passwords, notes, cards and everything important
+              in a beautifully encrypted vault with instant access
+              across all your devices.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-12">
-            <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
-              <p className="text-3xl font-bold">256-bit</p>
-              <p className="text-slate-400 mt-1">Encryption</p>
+          <div className="relative z-10 grid grid-cols-2 gap-4 mt-12">
+            <div
+              className="
+      p-5
+      rounded-3xl
+
+      bg-transparent
+      backdrop-blur-xl
+
+      border
+      border-cyan-500/15
+
+      hover:border-cyan-500/30
+      transition-all
+    "
+            >
+              <p
+                className="
+        text-3xl
+        font-bold
+
+        bg-gradient-to-r
+        from-cyan-400
+        to-fuchsia-500
+
+        bg-clip-text
+        text-transparent
+      "
+              >
+                256-bit
+              </p>
+
+              <p className="text-muted-foreground mt-1">
+                Encryption
+              </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
-              <p className="text-3xl font-bold">99.9%</p>
-              <p className="text-slate-400 mt-1">Secure</p>
+            <div
+              className="
+      p-5
+      rounded-3xl
+
+      bg-transparent
+      backdrop-blur-xl
+
+      border
+      border-fuchsia-500/15
+
+      hover:border-fuchsia-500/30
+      transition-all
+    "
+            >
+              <p
+                className="
+        text-3xl
+        font-bold
+
+        bg-gradient-to-r
+        from-cyan-400
+        to-fuchsia-500
+
+        bg-clip-text
+        text-transparent
+      "
+              >
+                99.9%
+              </p>
+
+              <p className="text-muted-foreground mt-1">
+                Secure
+              </p>
             </div>
           </div>
         </div>
@@ -158,108 +359,347 @@ export default function SignupPage() {
           <div className="w-full max-w-md">
 
             {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold text-xl">
+            <div className="lg:hidden flex items-center justify-center gap-3 mb-10">
+              <div
+                className="
+        p-3
+        rounded-2xl
+        bg-gradient-to-r
+        from-cyan-500
+        to-fuchsia-500
+        shadow-[0_0_25px_rgba(34,211,238,0.25)]
+      "
+              >
                 🔒
               </div>
-              <h1 className="text-3xl font-bold">Vaultify</h1>
+
+              <h1
+                className="
+        text-3xl
+        font-extrabold
+        bg-gradient-to-r
+        from-cyan-400
+        to-fuchsia-500
+        bg-clip-text
+        text-transparent
+      "
+              >
+                Vaultify
+              </h1>
             </div>
 
-            <h2 className="text-4xl font-bold text-center lg:text-left">
-              Create Account
-            </h2>
+            {/* Heading */}
+            <div className="mb-8">
 
-            <p className="mt-3 text-slate-400 text-center lg:text-left">
-              Start protecting your passwords today.
-            </p>
-
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
-
-              {/* NAME */}
-              <div>
-                <input
-                  {...register("fname")}
-                  placeholder="Full Name"
-                  className="w-full px-5 py-4 rounded-2xl bg-black/30 border border-white/10 focus:border-cyan-400 outline-none"
-                />
-                <p className="text-red-400 text-sm">{errors.fname?.message}</p>
+              <div
+                className="
+        inline-flex
+        items-center
+        px-4
+        py-2
+        rounded-full
+        bg-cyan-500/10
+        border
+        border-cyan-500/20
+        text-cyan-300
+        text-sm
+        font-medium
+      "
+              >
+                🚀 Create Your Secure Vault
               </div>
 
-              {/* EMAIL + OTP BUTTON */}
-              <div>
+              <h2
+                className="
+        mt-5
+        text-4xl
+        font-extrabold
+        tracking-tight
+      "
+              >
+                Join
+                <span
+                  className="
+          block
+          bg-gradient-to-r
+          from-cyan-400
+          via-sky-400
+          to-fuchsia-500
+          bg-clip-text
+          text-transparent
+        "
+                >
+                  Vaultify
+                </span>
+              </h2>
+
+              <p className="mt-3 text-muted-foreground">
+                Start protecting your passwords with military-grade encryption.
+              </p>
+
+            </div>
+
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-5"
+            >
+
+              {/* NAME */}
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Full Name
+                </label>
+
+                <input
+                  {...register("fname")}
+                  placeholder="John Doe"
+                  className="
+          w-full
+          h-12
+          px-4
+          rounded-2xl
+
+          bg-transparent
+          border-transparent
+
+          backdrop-blur-xl
+
+          focus:outline-none
+          focus:border-cyan-500
+          focus:ring-2
+          focus:ring-cyan-500/20
+
+          transition-all
+        "
+                />
+
+                <p className="text-red-500 text-sm">
+                  {errors.fname?.message}
+                </p>
+              </div>
+
+              {/* EMAIL */}
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Email Address
+                </label>
+
                 <input
                   {...register("email")}
-                  placeholder="Email"
-                  className="w-full px-5 py-4 rounded-2xl bg-black/30 border border-white/10 focus:border-cyan-400 outline-none"
+                  placeholder="you@example.com"
+                  className="
+          w-full
+          h-12
+          px-4
+          rounded-2xl
+
+          bg-transparent
+          border-transparent
+
+          backdrop-blur-xl
+
+          focus:outline-none
+          focus:border-cyan-500
+          focus:ring-2
+          focus:ring-cyan-500/20
+
+          transition-all
+        "
                 />
-                <p className="text-red-400 text-sm">{errors.email?.message}</p>
+
+                <p className="text-red-500 text-sm">
+                  {errors.email?.message}
+                </p>
 
                 <button
                   type="button"
                   onClick={sendCode}
                   disabled={sendingCode}
-                  className="mt-3 w-full px-5 py-3 rounded-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 text-black"
+                  className="
+          w-full
+          h-12
+
+          rounded-2xl
+
+          font-semibold
+
+          bg-gradient-to-r
+          from-cyan-500
+          to-fuchsia-500
+
+          text-foreground
+
+          shadow-[0_0_20px_rgba(34,211,238,0.25)]
+
+          hover:scale-[1.02]
+          hover:shadow-[0_0_35px_rgba(217,70,239,0.35)]
+
+          transition-all
+        "
                 >
-                  {sendingCode ? "Sending..." : "Send Verification Code"}
+                  {sendingCode
+                    ? "Sending..."
+                    : "Send Verification Code"}
                 </button>
               </div>
 
               {/* OTP */}
+
               {codeSent && (
-                <input
-                  value={userCode}
-                  onChange={(e) => setUserCode(e.target.value)}
-                  placeholder="Enter Verification Code"
-                  className="w-full px-5 py-4 rounded-2xl bg-black/30 border border-white/10 focus:border-cyan-400 outline-none"
-                />
+                <div className="space-y-2">
+
+                  <label className="text-sm font-medium">
+                    Verification Code
+                  </label>
+
+                  <input
+                    value={userCode}
+                    onChange={(e) =>
+                      setUserCode(e.target.value)
+                    }
+                    placeholder="Enter OTP"
+                    className="
+            w-full
+            h-12
+            px-4
+            rounded-2xl
+
+          bg-transparent
+          border-transparent
+
+            backdrop-blur-xl
+
+            focus:outline-none
+            focus:border-cyan-500
+            focus:ring-2
+            focus:ring-cyan-500/20
+          "
+                  />
+                </div>
               )}
 
               {/* PASSWORD */}
-              <div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Password
+                </label>
+
                 <input
                   type="password"
                   {...register("psswd")}
-                  placeholder="Password"
-                  className="w-full px-5 py-4 rounded-2xl bg-black/30 border border-white/10 focus:border-cyan-400 outline-none"
+                  placeholder="Create a strong password"
+                  className="
+          w-full
+          h-12
+          px-4
+          rounded-2xl
+
+          backdrop-blur-xl
+
+          focus:outline-none
+          focus:border-cyan-500
+          focus:ring-2
+          focus:ring-cyan-500/20
+        "
                 />
-                <p className="text-red-400 text-sm">{errors.psswd?.message}</p>
+
+                <p className="text-red-500 text-sm">
+                  {errors.psswd?.message}
+                </p>
               </div>
 
-              {/* CONFIRM PASSWORD */}
-              <div>
+              {/* CONFIRM */}
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Confirm Password
+                </label>
+
                 <input
                   type="password"
                   {...register("confirmPassword")}
-                  placeholder="Confirm Password"
-                  className="w-full px-5 py-4 rounded-2xl bg-black/30 border border-white/10 focus:border-cyan-400 outline-none"
+                  placeholder="Confirm password"
+                  className="
+          w-full
+          h-12
+          px-4
+          rounded-2xl
+
+          bg-transparent
+          border-transparent
+          backdrop-blur-xl
+
+          focus:outline-none
+          focus:border-fuchsia-500
+          focus:ring-2
+          focus:ring-fuchsia-500/20
+        "
                 />
-                <p className="text-red-400 text-sm">
+
+                <p className="text-red-500 text-sm">
                   {errors.confirmPassword?.message}
                 </p>
               </div>
 
               {/* SUBMIT */}
+
               <button
                 type="submit"
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold text-lg hover:scale-[1.02] transition-transform"
+                className="
+        w-full
+        h-12
+
+        rounded-2xl
+
+        text-lg
+        font-semibold
+
+        bg-gradient-to-r
+        from-cyan-500
+        to-fuchsia-500
+
+        text-white
+
+        hover:scale-[1.02]
+
+        shadow-[0_0_25px_rgba(34,211,238,0.25)]
+        hover:shadow-[0_0_35px_rgba(217,70,239,0.35)]
+
+        transition-all
+      "
               >
                 Create Secure Vault
               </button>
 
-              <div className="relative my-8">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/10" />
-                </div>
+              <div className="pt-6 text-center">
+
+                <p className="text-muted-foreground">
+                  Already have an account?
+                  <a
+                    href="/login"
+                    className="
+            ml-2
+            font-semibold
+
+            bg-gradient-to-r
+            from-cyan-400
+            to-fuchsia-500
+
+            bg-clip-text
+            text-transparent
+          "
+                  >
+                    Login
+                  </a>
+                </p>
+
               </div>
 
-              <p className="text-center text-slate-400 mt-4 py-4">
-                Already have an account?{" "}
-                <a href="/login" className="text-cyan-400">
-                  Login
-                </a>
-              </p>
-
             </form>
+
           </div>
         </div>
       </div>

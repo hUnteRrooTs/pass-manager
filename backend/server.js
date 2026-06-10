@@ -220,7 +220,7 @@ app.post("/vault", async (req, res) => {
   console.log(`MAsterkey: ${req.session}`)
   let epass = encrypt(info.password, mpassword)
   console.log(info)
-  if (typeof info.expiry_at === 'undefined') {
+  if (typeof info.expiry_at === undefined) {
     await pool.query(
       `INSERT INTO passwords (uid, website, username, password)
      VALUES ($1, $2, $3, $4)`,
@@ -330,7 +330,7 @@ app.post("/send-code", async (req, res) => {
       100000 + Math.random() * 900000
     );
   try {
-
+    console.log(req.body)
     await sendMail(req.body.email, "Verify Your Vaultify Account", `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
       <h2>Welcome to Vaultify</h2>

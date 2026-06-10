@@ -69,7 +69,6 @@ function HomePage() {
     } else {
       document.documentElement.classList.remove("dark");
     }
-    console.log("darkMode:", darkMode);
 
     localStorage.setItem(
       "theme",
@@ -230,35 +229,59 @@ function HomePage() {
               >
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </Button>
-              <Button
-                variant="outline"
-                className="
+              {user ? (
+
+                <Button
+                  onClick={logout}
+                  variant="outline"
+                  className="
+      border-red-500/40
+      text-red-400
+      hover:bg-red-500/10
+      hover:border-red-500
+      transition-all
+      "
+                >
+                  Logout
+                </Button>
+
+              ) : (
+
+                <>
+                  <Button
+                    variant="outline"
+                    className="
         border-cyan-500/40
         text-cyan-400
         bg-transparent
         hover:bg-cyan-500/10
         "
-                asChild
-              ><a href='/login'>
-                  Login
-                </a>
-              </Button>
+                    asChild
+                  >
+                    <a href="/login">
+                      Login
+                    </a>
+                  </Button>
 
-              <Button
-                className="
+                  <Button
+                    className="
         bg-gradient-to-r
         from-cyan-500
         to-fuchsia-500
-        text-foreground
+        text-white
         hover:scale-105
         transition-all
         shadow-[0_0_25px_rgba(34,211,238,0.25)]
         "
-                asChild
-              ><a href='/signup'>
-                  Start Free
-                </a>
-              </Button>
+                    asChild
+                  >
+                    <a href="/signup">
+                      Start Free
+                    </a>
+                  </Button>
+                </>
+
+              )}
             </div>
           </div>
         </header>
@@ -315,8 +338,10 @@ function HomePage() {
           hover:bg-transparent
           hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]
           "
-                >
-                  Live Demo
+                  asChild
+                ><a href='/demo'>
+                    Live Demo
+                  </a>
                 </Button>
               </div>
 

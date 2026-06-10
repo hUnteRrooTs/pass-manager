@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { google } = require("googleapis")
 
 const oauth2client = new google.auth.OAuth2(
@@ -33,5 +34,4 @@ async function sendMail(to, subject, html) {
     },
   });
 }
-
 module.exports = { sendMail }
