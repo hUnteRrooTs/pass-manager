@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -104,8 +104,24 @@ export default function SignupPage() {
     }
   };
 
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+  useEffect(() => {
+    localStorage.setItem(
+      "theme",
+      darkMode ? "dark" : "light"
+    );
+
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  }, [darkMode])
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden flex items-center justify-center px-4 py-10">
 
       {/* Background effects */}
       <div
@@ -123,7 +139,7 @@ export default function SignupPage() {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-6xl grid lg:grid-cols-2 rounded-[32px] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl shadow-cyan-500/10">
+      <div className="relative z-10 w-full max-w-6xl grid lg:grid-cols-2 rounded-[32px] overflow-hidden border border-white/10 bg-card backdrop-blur-2xl shadow-2xl shadow-cyan-500/10">
 
         {/* LEFT PANEL */}
         <div
@@ -460,8 +476,11 @@ export default function SignupPage() {
           px-4
           rounded-2xl
 
-          bg-transparent
-          border-transparent
+  bg-card
+  border
+  border-border
+
+  text-foreground
 
           backdrop-blur-xl
 
@@ -495,8 +514,11 @@ export default function SignupPage() {
           px-4
           rounded-2xl
 
-          bg-transparent
-          border-transparent
+  bg-card
+  border
+  border-border
+
+  text-foreground
 
           backdrop-blur-xl
 
@@ -566,8 +588,11 @@ export default function SignupPage() {
             px-4
             rounded-2xl
 
-          bg-transparent
-          border-transparent
+  bg-card
+  border
+  border-border
+
+  text-foreground
 
             backdrop-blur-xl
 
@@ -597,6 +622,11 @@ export default function SignupPage() {
           px-4
           rounded-2xl
 
+  bg-card
+  border
+  border-border
+
+  text-foreground
           backdrop-blur-xl
 
           focus:outline-none
@@ -628,8 +658,11 @@ export default function SignupPage() {
           px-4
           rounded-2xl
 
-          bg-transparent
-          border-transparent
+  bg-card
+  border
+  border-border
+
+  text-foreground
           backdrop-blur-xl
 
           focus:outline-none

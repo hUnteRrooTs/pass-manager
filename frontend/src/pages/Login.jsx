@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import GithubSVG from "../assets/github-svgrepo-com.svg"
 const loginSchema = z.object({
   email: z
@@ -59,8 +60,24 @@ export default function LoginPage() {
 
   };
 
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+  useEffect(() => {
+    localStorage.setItem(
+      "theme",
+      darkMode ? "dark" : "light"
+    );
+
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  }, [darkMode])
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-background text-foreground  relative overflow-hidden flex items-center justify-center px-4 py-10">
       <div
         className="absolute inset-0 z-0 pointer-events-none"
         style={{
@@ -75,7 +92,7 @@ export default function LoginPage() {
           backgroundSize: "100% 100%",
         }}
       />
-      <div className="relative z-10 w-full max-w-5xl grid lg:grid-cols-2 rounded-[32px] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl shadow-cyan-500/10">
+      <div className="relative z-10 w-full max-w-5xl grid lg:grid-cols-2 rounded-[32px] overflow-hidden border border-white/10  bg-card text-card-foreground backdrop-blur-2xl shadow-2xl shadow-cyan-500/10">
         <div
           className="
     hidden lg:flex
@@ -216,7 +233,7 @@ export default function LoginPage() {
         border
         border-cyan-500/20
 
-        bg-white/5
+        bg-card text-card-foreground
         backdrop-blur-xl
 
         p-5
@@ -241,7 +258,7 @@ export default function LoginPage() {
         border
         border-fuchsia-500/20
 
-        bg-white/5
+        bg-card text-card-foreground
         backdrop-blur-xl
 
         p-5
@@ -341,7 +358,7 @@ export default function LoginPage() {
         border
         border-white/10
 
-        bg-white/5
+        bg-card text-card-foreground
         backdrop-blur-xl
 
         p-6
@@ -388,9 +405,11 @@ export default function LoginPage() {
                 py-4
 
                 rounded-2xl
+  bg-card
+  border
+  border-border
 
-                bg-black/20
-                border
+  text-foreground
 
                 outline-none
 
@@ -466,13 +485,15 @@ export default function LoginPage() {
 
                 rounded-2xl
 
-                bg-black/20
-                border
+  bg-card
+  border
+  border-border
+
+  text-foreground
 
                 outline-none
 
                 transition-all
-
                 ${errors.password
                           ? "border-red-500"
                           : "border-white/10 focus:border-cyan-500"}

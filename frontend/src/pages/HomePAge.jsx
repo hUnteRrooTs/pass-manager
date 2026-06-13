@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import LockSVG from "../assets/lock-svgrepo-com.svg"
 import "./HomePage.css"
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import HeroText from './HeroText';
 import {
   Card,
@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 function HomePage() {
+  const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const logout = async () => {
     localStorage.removeItem("user");
@@ -61,19 +62,22 @@ function HomePage() {
         "Only you can view your passwords. Not even us.",
     },
   ];
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")))
+    localStorage.setItem(
+      "theme",
+      darkMode ? "dark" : "light"
+    );
+
     if (darkMode) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
+    setUser(JSON.parse(localStorage.getItem("user")))
 
-    localStorage.setItem(
-      "theme",
-      darkMode ? "dark" : "light"
-    );
   }, [darkMode])
   return (
     <>
