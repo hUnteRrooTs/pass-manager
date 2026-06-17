@@ -208,43 +208,46 @@ const encrypt = (data, mKey) => {
 }
 
 app.post("/vault", async (req, res) => {
-
-  const info = {
-    uid: req.body.uid,
-    website: req.body.website,
-    username: req.body.username,
-    password: req.body.password,
-    expiry_at: req.body.expiry_at
-  };
-  const mpassword = req.session.mpassword
-  console.log(`MAsterkey: ${req.session}`)
-  let epass = encrypt(info.password, mpassword)
-  console.log(info)
-  if (typeof info.expiry_at === undefined) {
-    await pool.query(
-      `INSERT INTO passwords (uid, website, username, password)
+  try {
+    const info = {
+      uid: req.body.uid,
+      website: req.body.website,
+      username: req.body.username,
+      password: req.body.password,
+      expiry_at: req.body.expiry_at
+    };
+    const mpassword = req.session.mpassword
+    console.log(`MAsterkey: ${req.session}`)
+    let epass = encrypt(info.password, mpassword)
+    console.log(info)
+    if (typeof info.expiry_at === undefined) {
+      await pool.query(
+        `INSERT INTO passwords (uid, website, username, password)
      VALUES ($1, $2, $3, $4)`,
 
-      [
-        info.uid,
-        info.website,
-        info.username,
-        epass,
-      ])
-    res.send("Saved")
-  } else {
-    await pool.query(
-      `INSERT INTO passwords (uid, website, username, password,expiry_at)
+        [
+          info.uid,
+          info.website,
+          info.username,
+          epass,
+        ])
+      res.send("Saved")
+    } else {
+      await pool.query(
+        `INSERT INTO passwords (uid, website, username, password,expiry_at)
      VALUES ($1, $2, $3, $4, $5)`,
 
-      [
-        info.uid,
-        info.website,
-        info.username,
-        epass,
-        info.expiry_at
-      ])
-    res.send("Saved");
+        [
+          info.uid,
+          info.website,
+          info.username,
+          epass,
+          info.expiry_at
+        ])
+      res.send("Saved");
+    }
+  } catch (err) {
+    res.send(err.message)
   }
 
 });
