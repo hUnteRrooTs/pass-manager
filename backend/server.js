@@ -217,7 +217,7 @@ app.post("/vault", async (req, res) => {
       expiry_at: req.body.expiry_at
     };
     const mpassword = req.session.mpassword
-    console.log(`MAsterkey: ${req.session}`)
+    console.log(`MAsterkey: ${req.session.mpassword}`)
     let epass = encrypt(info.password, mpassword)
     console.log(info)
     if (typeof info.expiry_at === undefined) {
